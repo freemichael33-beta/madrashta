@@ -1,0 +1,14 @@
+{
+  "name": "Modern Assyrian Language School",
+  "short_name": "Assyrian School",
+  "description": "Schools, courses and teachers of Modern Assyrian (Sureth) worldwide.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#1F4FE0",
+  "icons": [
+    { "src": "/img/logo.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/img/logo-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/img/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

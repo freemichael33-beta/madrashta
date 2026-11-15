@@ -1,0 +1,3 @@
+Inter, Noto Sans Arabic and Noto Sans Syriac Eastern are licensed under the
+SIL Open Font License, Version 1.1 (https://openfontlicense.org).
+Files taken from the @fontsource packages (fontsource.org).

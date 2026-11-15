@@ -1,0 +1,3 @@
+Contact: mailto:info@example.org
+Expires: 2027-05-06T02:55:45.692Z
+Preferred-Languages: en, ru, de, sv

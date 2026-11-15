@@ -1,0 +1,240 @@
+# Modern Assyrian Language School
+
+> Learn Modern Assyrian (Sureth) or Turoyo (Surayt): Assyrian language schools, courses and teachers in Europe, the Middle East, the Americas, Ukraine, Georgia, Armenia, Australia and online.
+
+The site is a free, curated directory of places to learn the Assyrian Neo-Aramaic languages: Sureth (Modern Assyrian, Swadaya; ISO 639-3: aii) and Turoyo (Surayt; ISO 639-3: tru). It lists community and church schools, language courses, apps and online courses, and private teachers. Every listing is checked by a person, and shows its dialect, city and country (or Online), lesson format (in person, online or both), languages of instruction, contacts, its source and the date it was last checked.
+
+The site has no accounts and no forms. Schools, courses and teachers ask to be listed by email to info@example.org; corrections and removals go to the same address.
+
+Interface languages: English, Ukrainian, Russian, German, Swedish, French, Arabic and Assyrian. Every page exists in each language under /{lang}/ where lang is one of: en, uk, ru, de, sv, fr, es, ar, syr.
+
+## Main pages
+
+- [Home](https://www.example.org/en/): what the school is and how to start
+- [Directory](https://www.example.org/en/directory): all schools, courses and teachers, filterable by region, country, type and dialect (?dialect=sureth or ?dialect=turoyo)
+- [FAQ](https://www.example.org/en/faq): what Modern Assyrian is, where and how to learn it
+- [Assyrian language and dialects](https://www.example.org/en/assyrian): history of Aramaic since the Assyrian Empire, a timeline and a table of Sureth dialects
+- [Classical Syriac](https://www.example.org/en/syriac): a short academic history of Classical Syriac and a table of universities where it is taught
+- [About](https://www.example.org/en/about): mission and values
+- [Get listed](https://www.example.org/en/submit): how schools and teachers ask to be listed by email (free)
+
+## Directory by region
+
+- [Europe](https://www.example.org/en/directory/europe): Germany, Sweden, Netherlands, Belgium, France, United Kingdom, Austria, Switzerland, Denmark, Norway, Finland, Greece, Italy, Spain, Poland, Czechia, Ireland, Russia
+- [Middle East](https://www.example.org/en/directory/middle-east): Iraq, Syria, Iran, Türkiye, Lebanon, Jordan, Israel, Egypt, United Arab Emirates, Kuwait, Qatar
+- [The Americas](https://www.example.org/en/directory/americas): United States, Canada, Mexico, Brazil, Argentina, Chile, Colombia
+- [Ukraine](https://www.example.org/en/directory/ukraine): Ukraine
+- [Georgia](https://www.example.org/en/directory/georgia): Georgia
+- [Armenia](https://www.example.org/en/directory/armenia): Armenia
+- [Australia and New Zealand](https://www.example.org/en/directory/australia): Australia, New Zealand
+- [Online](https://www.example.org/en/directory/online): courses, apps and teachers that work online
+
+## Frequently asked questions
+
+### What is Modern Assyrian?
+
+Modern Assyrian, also called Sureth, Assyrian Neo-Aramaic or Swadaya, is the living Aramaic language of the Assyrian people. It is spoken in Iraq, Iran, Syria and Turkey and by a large diaspora, and it is written in the Eastern Syriac script from right to left.
+
+### Where can I learn Assyrian?
+
+In community and church schools, in language courses and with private teachers. Our directory lists them by region and country, from Europe and the Middle East to the Americas and Australia, and also online courses.
+
+### Can I learn Assyrian online?
+
+Yes. Many teachers and courses give lessons online. In the directory, look for listings with the format "Online" or "In person and online".
+
+### Is Modern Assyrian the same as Classical Syriac?
+
+No. Classical Syriac is the literary and liturgical language of the Syriac churches. Modern Assyrian is the everyday spoken language. They share the alphabet and much of the vocabulary.
+
+### How long does it take to learn the Assyrian alphabet?
+
+The alphabet has 22 letters. With regular practice most learners read simple words within a few weeks.
+
+### How do I add my school, course or private lessons?
+
+Send us an email with the details. The page "Get listed" has a ready template. Listing is free, and our team checks every request.
+
+### What is the difference between Sureth and Turoyo?
+
+Sureth (Modern Assyrian, Swadaya) is spoken by Assyrians from Hakkari, Urmia and northern Iraq. Turoyo, also called Surayt, comes from Tur Abdin in south-eastern Turkey. Both are Neo-Aramaic languages; the directory shows which one each school or teacher teaches.
+
+## Where to study Classical Syriac
+
+- [University of Oxford](https://www.ames.ox.ac.uk/syriac-studies-mst), Oxford, United Kingdom: MSt in Syriac Studies
+- [University of Edinburgh](https://www.drps.ed.ac.uk/24-25/dpt/cxdivi11053.htm), Edinburgh, United Kingdom: Introducing Classical Syriac (DIVI11053) (2024–25)
+- [Uppsala University](https://www.uu.se/en/study/course?query=5SY122), Uppsala, Sweden: Basic Course in Syriac (5SY122), distance learning (2026)
+- [University of Salzburg, Syriac Studies](https://syriacsalzburg.eu/), Salzburg, Austria: MA in Syriac Theology; Syriac language classes
+- [Philipps-Universität Marburg](https://www.uni-marburg.de/de/cnms/semitistik/studium/vorlesungsverzeichnis/wintersemester-2025-2026), Marburg, Germany: Syrisch-Aramäisch; Syrische Literatur (2025–26)
+- [Heidelberg University](https://backend.semitistik.uni-heidelberg.de/de/dokumente/modulhandbuch-ba-semitistik/download), Heidelberg, Germany: BA Semitistik: Syrisch I–II, Altsyrische Lektüre
+- [Institut Catholique de Paris](https://www.icp.fr/formations/un-etablissement-ouvert/catalogue-des-cours-publics/syriaque-niveau-1-5), Paris, France: Syriaque niveau 1 (2026–27)
+- [UCLouvain](https://uclouvain.be/en-cours-2026-lglor1644), Louvain-la-Neuve, Belgium: LGLOR1644: Syriac language (late Aramaic) (2026–27)
+- [Pontifical Oriental Institute](https://www.unigre.it/en/students/resources/language-courses/ancient-and-modern-oriental-languages-courses/), Rome, Italy: Ancient Oriental languages: Syriac (2026–27)
+- [Catholic University of America, Department of Semitics](https://catholic.smartcatalogiq.com/en/2026-2027/graduate-announcements/courses/sem-semitics/500/sem-530), Washington, DC, United States: SEM 530 Intensive Elementary Syriac; online summer Syriac (2026–27)
+- [Yale University](https://catalog.yale.edu/gsas/degree-granting-departments-programs/near-eastern-languages-civilizations/), New Haven, CT, United States: Elementary Syriac I; Advanced Syriac I (2026–27)
+- [University of Duhok, College of Basic Education](https://uod.ac/university/top-stories/workshops/uod-starts-teaching-syriac-language-at-the-basic-education-college/?lang=en), Duhok, Iraq: Syriac language course (2024–25)
+- [Polis, The Jerusalem Institute of Languages and Humanities](https://www.polisjerusalem.org/language/classical-syriac/), Jerusalem, Israel: Classical Syriac, levels I–III (2026)
+- [St Ephrem Ecumenical Research Institute (SEERI), with Mahatma Gandhi University](https://seeri.org/AboutSeeri.html), Kottayam, India: Certificate, MA and PhD in Syriac
+- [St Thomas College, Pala](https://www.onmanorama.com/career-and-campus/top-news/2023/04/20/colleges-in-kerala-teaching-syriac-as-second-language.html), Pala, India: Syriac as second language (undergraduate) (2023)
+- [Baselius College](https://www.onmanorama.com/career-and-campus/top-news/2023/04/20/colleges-in-kerala-teaching-syriac-as-second-language.html), Kottayam, India: Syriac as second language (undergraduate) (2023)
+- [St Berchmans College](https://www.onmanorama.com/career-and-campus/top-news/2023/04/20/colleges-in-kerala-teaching-syriac-as-second-language.html), Changanassery, India: Syriac as second language (undergraduate) (2023)
+- [St Gregorios College](https://www.onmanorama.com/career-and-campus/top-news/2023/04/20/colleges-in-kerala-teaching-syriac-as-second-language.html), Kottarakara, India: Syriac as second language (undergraduate) (2023)
+
+## Listings
+
+### AACO Assyrian Language Class
+
+- Type: Language course
+- Dialect: Sureth (Modern Assyrian)
+- Location: Phoenix, AZ, United States
+- Format: In person
+- Languages of instruction: en
+- Website: https://www.assyrianamerican.org/assyrian-language-class
+- Email: info@assyrianamerican.org
+- Page: https://www.example.org/en/listing/2
+- Source: https://www.assyrianamerican.org/assyrian-language-class
+- Last checked: 2026-11-02
+
+Beginner Assyrian class of the Assyrian American Cultural Organization of Arizona, held in terms (weekly evening lessons).
+
+### ANCI Assyrian School (Assyrian National Council of Illinois)
+
+- Type: School
+- Dialect: Sureth (Modern Assyrian)
+- Location: Skokie, IL, United States
+- Format: In person
+- Languages of instruction: en
+- Website: https://ancil.org/assyrian-school/
+- Phone: +1 224 251 7399
+- Page: https://www.example.org/en/listing/1
+- Source: https://ancil.org/assyrian-school/
+- Last checked: 2026-11-02
+
+Saturday Assyrian school for children, with adult classes. Classes on Saturdays during the school year.
+
+### Assyrian Diqlat School (Assyrian Australian Association)
+
+- Type: School
+- Dialect: Sureth (Modern Assyrian)
+- Location: Sydney, Australia
+- Format: In person
+- Languages of instruction: en
+- Website: https://assyrianaustralian.org.au/initiatives/diqlat/
+- Page: https://www.example.org/en/listing/4
+- Source: https://assyrianaustralian.org.au/initiatives/diqlat/
+- Last checked: 2026-11-02
+
+Community Assyrian language school of the Assyrian Australian Association in south-western Sydney.
+
+### Daniel Sada (italki)
+
+- Type: Teacher
+- Dialect: Sureth (Modern Assyrian)
+- Location: Online
+- Format: Online
+- Languages of instruction: en
+- Website: https://www.italki.com/en/teacher/16605194
+- Page: https://www.example.org/en/listing/10
+- Source: https://www.italki.com/en/teacher/16605194/aramaic
+- Last checked: 2026-11-02
+
+Private online lessons of Assyrian-Aramaic (Sureth): speaking, reading and understanding. Booking through italki.
+
+### Learn Assyrian: alphabet lessons with audio
+
+- Type: Language course
+- Dialect: Sureth (Modern Assyrian)
+- Location: Online
+- Format: Online
+- Languages of instruction: en
+- Website: https://www.learnassyrian.com/aramaic/
+- Page: https://www.example.org/en/listing/9
+- Source: https://www.learnassyrian.com/aramaic/
+- Last checked: 2026-11-02
+
+Free self-study lessons of the Assyrian (Syriac-Aramaic) alphabet with audio.
+
+### Mamlo: learn Aramaic (Turoyo)
+
+- Type: Language course
+- Dialect: Turoyo (Surayt)
+- Location: Online
+- Format: Online
+- Languages of instruction: en
+- Website: https://www.mamlo.co/
+- Page: https://www.example.org/en/listing/7
+- Source: https://www.mamlo.co/
+- Last checked: 2026-11-02
+
+Free web app with short lessons on Turoyo vocabulary and phrases. Independent project.
+
+### Nativemonks: Assyrian classes online
+
+- Type: Language course
+- Dialect: Sureth (Modern Assyrian)
+- Location: Online
+- Format: Online
+- Languages of instruction: en
+- Website: https://nativemonks.com/assyrian-classes
+- Email: support@nativemonks.com
+- Page: https://www.example.org/en/listing/11
+- Source: https://nativemonks.com/assyrian-classes
+- Last checked: 2026-11-02
+
+Paid one-to-one Assyrian lessons online through a tutoring platform, sold in class packages.
+
+### Niles Township High Schools District 219: Assyrian (Syriac) language program
+
+- Type: School
+- Dialect: Sureth (Modern Assyrian)
+- Location: Skokie, IL, United States
+- Format: In person
+- Languages of instruction: en
+- Page: https://www.example.org/en/listing/3
+- Source: https://www.chaldeannews.com/2023-content/2023/10/1/sureth-in-schools
+- Last checked: 2026-11-02
+
+Accredited four-year Assyrian (Syriac) language sequence in public high schools (Niles North, Niles West, Maine East). For enrolled students of the district.
+
+### Šlomo Surayt: free online course of Surayt (Turoyo)
+
+- Type: Language course
+- Dialect: Turoyo (Surayt)
+- Location: Online
+- Format: Online
+- Languages of instruction: en, de, sv
+- Website: https://textbook.surayt.com/en/Online%20Course/
+- Email: aramaic.online@gmail.com
+- Page: https://www.example.org/en/listing/5
+- Source: https://www.geschkult.fu-berlin.de/en/e/semiarab/semitistik/forschung/abgeschlossene-forschungsprojekte/aramaic-online-project/index.html
+- Last checked: 2026-11-02
+
+Free university-led online course and textbook of Surayt-Aramaic (Turoyo), created by the Surayt-Aramaic Online Project at Freie Universität Berlin with partners.
+
+### Surayt app: learn Aramaic (Turoyo)
+
+- Type: Language course
+- Dialect: Turoyo (Surayt)
+- Location: Online
+- Format: Online
+- Languages of instruction: sv
+- Website: https://surayt.se/en/
+- Page: https://www.example.org/en/listing/6
+- Source: https://surayt.se/en/learn-turoyo
+- Last checked: 2026-11-02
+
+Free iPhone app with a 21-day course of Surayt (Turoyo) for heritage learners. Instruction in Swedish.
+
+### Sureth Scholars
+
+- Type: Language course
+- Dialect: Sureth (Modern Assyrian)
+- Location: Online
+- Format: Online
+- Languages of instruction: en
+- Website: https://surethscholars.com/
+- Page: https://www.example.org/en/listing/8
+- Source: https://surethscholars.com/
+- Last checked: 2026-11-02
+
+Free interactive online lessons of Sureth: alphabet and vowels, more lessons in preparation.

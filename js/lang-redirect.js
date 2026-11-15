@@ -1,0 +1,1 @@
+var L=["en","uk","ru","de","sv","fr","es","ar","syr"];var n=(navigator.languages||[navigator.language||'en']).map(function(x){return String(x).toLowerCase().split('-')[0]});for(var i=0;i<n.length;i++){var c=n[i]==='aii'?'syr':n[i];if(L.indexOf(c)!==-1){location.replace(c+'/index.html');break;}}
