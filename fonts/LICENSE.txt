@@ -1,3 +1,5 @@
 Inter, Noto Sans Arabic and Noto Sans Syriac Eastern are licensed under the
 SIL Open Font License, Version 1.1 (https://openfontlicense.org).
 Files taken from the @fontsource packages (fontsource.org).
+Noto Sans Syriac (Estrangela) and Noto Sans Syriac Western (Serto), used by the
+online course, are licensed under the same SIL Open Font License 1.1.
