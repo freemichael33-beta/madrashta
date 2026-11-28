@@ -867,7 +867,7 @@
       cert.appendChild(el('p', 'cx-cert-name', state.name || '—'));
       cert.appendChild(el('p', null, 'успешно завершил(а) ' + (M.certCourse || 'онлайн-курс современного ассирийского языка') + ' уровня ' + level.code + ' (' + level.title.toLowerCase() + ') по шкале CEFR, включая чтение в письменностях эстрангело, серто и маднхая' + (M.certExtra ? ', ' + M.certExtra : '') + '.'));
       cert.appendChild(el('p', 'muted', 'Итоговый тест: ' + c.score + '% · ' + c.date));
-      cert.appendChild(el('p', 'cx-cert-author', 'Автор курса: Michael Baddu'));
+      cert.appendChild(el('p', 'cx-cert-author', 'Автор курса: ' + (M.author || 'Michael Baddu')));
     }
     form.addEventListener('submit', function (e) { e.preventDefault(); state.name = input.value.trim().slice(0, 80); save(); draw(); });
     draw();
