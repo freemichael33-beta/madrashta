@@ -473,6 +473,7 @@
   // ---------- Script switcher ---------------------------------------------
   function scriptSwitcher(onChange) {
     var wrap = el('div', 'cx-scripts');
+    if (D.scripts.length < 2) { wrap.hidden = true; return wrap; }
     wrap.setAttribute('role', 'radiogroup');
     wrap.setAttribute('aria-label', T.script);
     D.scripts.forEach(function (s) {
@@ -520,7 +521,7 @@
   function renderOverview() {
     root.textContent = '';
     var head = el('div', 'cx-toolbar');
-    head.appendChild(el('span', 'cx-toolbar-label', T.script + ':'));
+    if (D.scripts.length > 1) head.appendChild(el('span', 'cx-toolbar-label', T.script + ':'));
     head.appendChild(scriptSwitcher(renderOverview));
     if (READINGS.length) {
       head.appendChild(el('span', 'cx-toolbar-label', T.readingLabel + ':'));
@@ -905,7 +906,7 @@
       cert.appendChild(el('h2', null, 'Сертификат'));
       cert.appendChild(el('p', null, 'подтверждает, что'));
       cert.appendChild(el('p', 'cx-cert-name', state.name || '—'));
-      cert.appendChild(el('p', null, 'успешно завершил(а) ' + (M.certCourse || 'онлайн-курс современного ассирийского языка') + ' уровня ' + level.code + ' (' + level.title.toLowerCase() + ') по шкале CEFR, включая чтение в письменностях эстрангело, серто и маднхая' + (M.certExtra ? ', ' + M.certExtra : '') + '.'));
+      cert.appendChild(el('p', null, 'успешно завершил(а) ' + (M.certCourse || 'онлайн-курс современного ассирийского языка') + ' уровня ' + level.code + ' (' + level.title.toLowerCase() + ') по шкале CEFR, включая чтение ' + (M.certScripts || 'в письменностях эстрангело, серто и маднхая') + (M.certExtra ? ', ' + M.certExtra : '') + '.'));
       cert.appendChild(el('p', 'muted', 'Итоговый тест: ' + c.score + '% · ' + c.date));
       cert.appendChild(el('p', 'cx-cert-author', 'Автор курса: ' + (M.author || 'Michael Baddu')));
     }
