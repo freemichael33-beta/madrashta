@@ -1,7 +1,7 @@
 {
-  "name": "Modern Assyrian Language School",
-  "short_name": "Assyrian School",
-  "description": "Schools, courses and teachers of Modern Assyrian (Sureth) worldwide.",
+  "name": "Madrashta — Assyrian Language School",
+  "short_name": "Madrashta",
+  "description": "Online courses in Sureth, Turoyo & Classical Syriac. Schools, courses and teachers of Modern Assyrian (Sureth) worldwide.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFFFFF",

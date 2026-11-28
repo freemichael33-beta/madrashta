@@ -19,7 +19,7 @@ window.COURSE_DATA = (function () {
     defaultScript: 'serto',
     vowelScript: 'serto',
     exportName: 'madrashta-turoyo-progress.json',
-    certOrg: 'Школа современного ассирийского языка',
+    certOrg: 'Madrashta — Школа ассирийского языка',
     certCourse: 'онлайн-курс языка туройо',
     courseName: 'Туройо',
     author: 'Michael Baddu'
