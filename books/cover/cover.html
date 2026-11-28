@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Madrashta — обложка</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  @page { size: 210mm 297mm; margin: 0; }
+  :root {
+    --navy: #0F1F5C; --navy-deep: #0A1640; --ink: #0A1640; --muted: #4A5A8A;
+    --gold: #F4B400; --gold-light: #FFD25A; --blue: #3B6CFF; --paper: #FBF8F2;
+    --accent: #C8102E; --syr: "Syriac Estrangelo";
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 210mm; height: 297mm; }
+  body { font-family: Inter, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .cover { position: relative; width: 210mm; height: 297mm; overflow: hidden; }
+  .syr { font-family: var(--syr); direction: rtl; unicode-bidi: isolate; line-height: 1; }
+  .serif { font-family: "Noto Serif", serif; }
+  .caps { text-transform: uppercase; letter-spacing: .32em; font-size: 8.5pt; font-weight: 500; }
+  [hidden] { display: none !important; }
+
+  /* ---------- A · «Лист» — warm paper, one big word ---------- */
+  .a { background: var(--paper); color: var(--navy); }
+  .a .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 7mm; background: var(--accent); }
+  .a .top { position: absolute; left: 27mm; right: 20mm; top: 20mm; display: flex; justify-content: space-between;
+            padding-bottom: 4mm; border-bottom: .3mm solid rgba(15,31,92,.18); color: var(--muted); }
+  .a .word { position: absolute; left: 7mm; right: 0; top: 62mm; text-align: center; font-size: 118pt; font-weight: 400; color: var(--accent); }
+  .a .greet { position: absolute; left: 7mm; right: 0; top: 122mm; text-align: center; font-size: 17pt; font-style: italic; color: var(--muted); }
+  .a .block { position: absolute; left: 27mm; right: 20mm; top: 178mm; }
+  .a .title { font-size: 31pt; font-weight: 600; line-height: 1.12; letter-spacing: -.005em; max-width: 140mm; }
+  .a .sub { font-size: 17pt; font-style: italic; color: var(--muted); margin-top: 2.5mm; }
+  .a .lvl { font-size: 10.5pt; color: var(--muted); margin-top: 7mm; }
+  .a .foot { position: absolute; left: 27mm; right: 20mm; bottom: 18mm; display: flex; align-items: center; gap: 4mm;
+             padding-top: 5mm; border-top: .3mm solid rgba(15,31,92,.18); font-size: 9.5pt; color: var(--muted); }
+  .a .foot img { width: 13mm; height: 13mm; }
+  .a .foot .series b { display: block; color: var(--navy); font-weight: 700; font-size: 10.5pt; letter-spacing: .02em; }
+  .a .foot .right { margin-left: auto; text-align: right; }
+  .a .foot .right b { display: block; color: var(--navy); font-weight: 500; }
+  .a .script { color: var(--accent); font-weight: 700; }
+
+  /* ---------- B · «Восход» — night, sun and star ---------- */
+  .b { background: var(--navy); color: #fff; }
+  .b .star { position: absolute; left: 50%; top: 24mm; width: 122mm; height: 122mm; transform: translateX(-50%); }
+  .b .word { position: absolute; left: 0; right: 0; top: 158mm; text-align: center; font-size: 70pt; color: #fff; }
+  .b .greet { position: absolute; left: 0; right: 0; top: 188mm; text-align: center; font-size: 14pt; font-style: italic; color: rgba(255,255,255,.7); }
+  .b .block { position: absolute; left: 22mm; right: 22mm; top: 208mm; text-align: center; }
+  .b .title { font-size: 23pt; font-weight: 700; line-height: 1.2; letter-spacing: -.01em; }
+  .b .sub { font-size: 13pt; color: rgba(255,255,255,.72); margin-top: 1.5mm; }
+  .b .lvl { color: var(--gold-light); margin-top: 6mm; }
+  .b .foot { position: absolute; left: 22mm; right: 22mm; bottom: 20mm; display: flex; align-items: center; gap: 3.5mm;
+             font-size: 9pt; color: rgba(255,255,255,.72); }
+  .b .foot img { width: 11mm; height: 11mm; }
+  .b .foot b { color: #fff; font-weight: 700; }
+  .b .foot .right { margin-left: auto; text-align: right; }
+  .b .edition { position: absolute; left: 0; right: 0; bottom: 0; height: 9mm; background: var(--accent);
+                display: flex; align-items: center; justify-content: center; color: #fff; }
+  .b.light-accent .edition { color: var(--navy); }
+
+  /* ---------- C · «Буква» — swiss grid, giant Alaph ---------- */
+  .c { background: #fff; color: var(--ink); }
+  .c .alaph { position: absolute; right: -4mm; bottom: -34mm; font-size: 430pt; color: var(--accent); }
+  .c .top { position: absolute; left: 20mm; right: 20mm; top: 20mm; display: flex; align-items: center; gap: 3mm; color: var(--muted); }
+  .c .top img { width: 9mm; height: 9mm; }
+  .c .top .lvl { margin-left: auto; }
+  .c .block { position: absolute; left: 20mm; right: 20mm; top: 52mm; }
+  .c .title { font-size: 40pt; font-weight: 700; line-height: 1.04; letter-spacing: -.025em; max-width: 160mm; }
+  .c .sub { font-size: 16pt; color: var(--muted); margin-top: 4mm; font-weight: 400; }
+  .c .wordrow { display: flex; align-items: baseline; gap: 5mm; margin-top: 12mm; }
+  .c .word { font-size: 40pt; color: var(--navy); }
+  .c .greet { font-size: 14pt; font-style: italic; color: var(--muted); }
+  .c .foot { margin-top: 14mm; font-size: 10pt; color: var(--muted); line-height: 1.55; }
+  .c .foot b { display: block; color: var(--ink); font-size: 12pt; font-weight: 700; }
+  .c .foot .script { color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="covers.js"></script>
+<script>
+  const q = new URLSearchParams(location.search);
+  const S = window.COVER_SERIES;
+  const B = COVER_BOOKS.find(b => b.id === (q.get("book") || COVER_BOOKS[0].id));
+  const v = q.get("v") || "a";
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const sub = B.subtitle ? esc(B.subtitle) : "";
+  document.title = `${B.greeting} ${B.title} — ${B.script}`;
+  document.documentElement.style.setProperty("--accent", B.accent);
+  document.documentElement.style.setProperty("--syr", `"${B.font}"`);
+
+  // The Assyrian star from the logo, on its own.
+  const star = `<svg class="star" viewBox="0 0 100 100" aria-hidden="true">
+    <defs><radialGradient id="sun" cx=".4" cy=".35" r=".75"><stop offset="0" stop-color="#FFD25A"/><stop offset="1" stop-color="#F4B400"/></radialGradient></defs>
+    <path d="M50 0 L58.5 41.5 L100 50 L58.5 58.5 L50 100 L41.5 58.5 L0 50 L41.5 41.5Z" fill="#3B6CFF" opacity=".95"/>
+    <path d="M50 18 L54 46 L82 50 L54 54 L50 82 L46 54 L18 50 L46 46Z" fill="#fff" opacity=".12" transform="rotate(45 50 50)"/>
+    <circle cx="50" cy="50" r="21" fill="url(#sun)"/></svg>`;
+
+  const tpl = {
+    a: () => `<div class="cover a">
+      <div class="bar"></div>
+      <div class="top caps"><span>${esc(S.series)}</span><span>${esc(S.levels)}</span></div>
+      <div class="word syr">${esc(B.word)}</div>
+      <div class="greet serif">${esc(B.greeting)}</div>
+      <div class="block serif">
+        <h1 class="title">${esc(B.title)}</h1>
+        ${sub ? `<div class="sub">${sub}</div>` : ""}
+        <div class="lvl" style="font-family:Inter">${esc(S.levelsLine)} · письмо <span class="script">${esc(B.script)}</span></div>
+      </div>
+      <div class="foot">
+        <img src="../../img/logo.svg" alt="">
+        <div class="series"><b>${esc(S.series)}</b>${esc(S.seriesLine)}</div>
+        <div class="right"><b>${esc(S.author)}</b>${esc(S.year)}</div>
+      </div></div>`,
+    b: () => `<div class="cover b${["#E0A100","#F4B400"].includes(B.accent) ? " light-accent" : ""}">
+      ${star}
+      <div class="word syr">${esc(B.word)}</div>
+      <div class="greet serif">${esc(B.greeting)}</div>
+      <div class="block">
+        <h1 class="title">${esc(B.title)}</h1>
+        ${sub ? `<div class="sub">${sub}</div>` : ""}
+        <div class="lvl caps">${esc(S.levelsLine)}</div>
+      </div>
+      <div class="foot">
+        <img src="../../img/logo-dark.svg" alt="">
+        <div><b>${esc(S.series)}</b><br>${esc(S.seriesLine)}</div>
+        <div class="right"><b>${esc(S.author)}</b><br>${esc(S.year)}</div>
+      </div>
+      <div class="edition caps">Письмо · ${esc(B.script)}</div></div>`,
+    c: () => `<div class="cover c">
+      <div class="alaph syr">ܐ</div>
+      <div class="top caps"><img src="../../img/logo.svg" alt=""><span>${esc(S.series)}</span><span class="lvl">${esc(S.levels)}</span></div>
+      <div class="block">
+        <h1 class="title">${esc(B.title)}</h1>
+        ${sub ? `<div class="sub">(${sub})</div>` : ""}
+        <div class="wordrow"><span class="word syr">${esc(B.word)}</span><span class="greet serif">${esc(B.greeting)}</span></div>
+        <div class="foot"><b>${esc(S.author)}</b>${esc(S.levelsLine)}<br>Письмо: <span class="script">${esc(B.script)}</span><br>${esc(S.series)} — ${esc(S.seriesLine)}</div>
+      </div></div>`,
+  };
+  document.getElementById("root").innerHTML = tpl[v]();
+</script>
+</body>
+</html>
