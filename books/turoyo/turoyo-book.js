@@ -67,19 +67,19 @@ function preface() {
 <p>This book follows the online Turoyo (Surayt) course on the Madrashta website. The material is divided into the six levels of the Common European Framework of Reference for Languages (CEFR): from A1, where you learn the alphabet, to C2, where you read about literature in Turoyo.</p>
 <p>All Syriac text in this book is set in the western <b>Serto</b> script, the traditional script of Turoyo. Readings are given in two ways: in the common Turoyo Latin spelling (š, ṯ, ḥ, ṭ, ṣ, ʿ, x) and in plain English letters (EN). This is the English edition; Russian and Ukrainian editions with Cyrillic readings are published separately.</p>
 <p>Each lesson is followed by exercises; the answers are at the end of the book together with a dictionary of all the words in the course. Interactive exercises, tests and certificates are available on the website in the Courses section.</p>
-<p class="colophon">Course author: Michael Baddu. The course materials are a work in progress and are being reviewed by native-speaking teachers. The Noto Sans Syriac fonts are licensed under the SIL Open Font License 1.1.</p>
+<p class="colophon">Course author: Michael Baddu. The Noto Sans Syriac fonts are licensed under the SIL Open Font License 1.1.</p>
 </section>`;
   if (ED === 'uk') return `<section class="page"><h2>Передмова</h2>
 <p>Ця книжка повторює онлайн-курс мови туройо (сурайт) із сайту Madrashta. Матеріал поділено за шістьма рівнями Загальноєвропейських рекомендацій з мовної освіти (CEFR): від A1, де ви вчите абетку, до C2, де читаєте про літературу туройо.</p>
 <p>Увесь сирійський текст у книжці набрано західним письмом <b>серто</b>, традиційним письмом туройо. Читання подано трьома способами: поширеною латиницею туройо (š, ṯ, ḥ, ṭ, ṣ, ʿ, x), українською кирилицею та простою англійською латиницею (EN). Це українське видання книжки.</p>
 <p>Після кожного уроку є вправи, відповіді до них зібрано в кінці книжки разом зі словником усіх слів курсу. Інтерактивні вправи, тести й сертифікати доступні на сайті в розділі «Курси».</p>
-<p class="colophon">Автор курсу: Michael Baddu. Матеріали курсу в розробці й перевіряються викладачами — носіями мови. Шрифти Noto Sans Syriac поширюються за ліцензією SIL Open Font License 1.1.</p>
+<p class="colophon">Автор курсу: Michael Baddu. Шрифти Noto Sans Syriac поширюються за ліцензією SIL Open Font License 1.1.</p>
 </section>`;
   return `<section class="page"><h2>Предисловие</h2>
 <p>Эта книга повторяет онлайн-курс языка туройо (сурайт) с сайта Madrashta. Материал разбит по шести уровням Общеевропейской шкалы языковых компетенций (CEFR): от A1, где вы учите алфавит, до C2, где читаете о литературе на туройо.</p>
 <p>Весь сирийский текст в книге набран западным письмом <b>серто</b>, традиционным письмом туройо. Чтение дано тремя способами: распространённой латиницей туройо (š, ṯ, ḥ, ṭ, ṣ, ʿ, x), кириллицей и простой английской латиницей (EN). Это русское издание книги.</p>
 <p>После каждого урока есть упражнения, ответы к ним собраны в конце книги вместе со словарём всех слов курса. Интерактивные упражнения, тесты и сертификаты доступны на сайте в разделе «Курсы».</p>
-<p class="colophon">Автор курса: Michael Baddu. Материалы курса находятся в разработке и проверяются преподавателями-носителями языка. Шрифты Noto Sans Syriac распространяются по лицензии SIL Open Font License 1.1.</p>
+<p class="colophon">Автор курса: Michael Baddu. Шрифты Noto Sans Syriac распространяются по лицензии SIL Open Font License 1.1.</p>
 </section>`;
 }
 

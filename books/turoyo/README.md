@@ -11,4 +11,4 @@ English (`en`, no Cyrillic), Russian (`ru`, Cyrillic readings) and Ukrainian (`u
    (cover templates from branch `claude/project-thread-lojqz1`) and writes
    `<final>/{en,ru,uk}/turoyo-a1-c2-serto-{en,ru,uk}.pdf`.
 
-Course author: Michael Baddu. The content still needs review by a native Turoyo speaker.
+Course author: Michael Baddu.
