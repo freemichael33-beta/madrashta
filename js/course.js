@@ -41,7 +41,9 @@
     importErr: 'Не удалось прочитать файл.', of: 'из', script: 'Письменность', planned: 'Что будет на уровне',
     forms: ['отдельная', 'начальная', 'срединная', 'конечная'], noJoin: 'не соединяется слева',
     initial: 'начальная', medial: 'срединная', final: 'конечная', isolated: 'отдельная', testIntro: 'Тест',
-    reading: 'Чтение', phrases: 'Фразы для чтения', readingLabel: 'Чтение', notes: 'Заметки'
+    reading: 'Чтение', phrases: 'Фразы для чтения', readingLabel: 'Чтение', notes: 'Заметки', sentMeaning: 'Что значит это предложение?',
+    chooseSentence: 'Выберите предложение', buildSentence: 'Соберите предложение из слов', text: 'Текст', translation: 'Перевод',
+    showTr: 'Показать перевод', grammar: 'Грамматика', examples: 'Примеры', west: 'западное чтение'
   };
   if (M.strings) Object.keys(M.strings).forEach(function (k) { T[k] = M.strings[k]; });
 
@@ -257,6 +259,47 @@
     return shuffle(out);
   }
 
+  function sentenceExercises(unit) {
+    var pool = unit.sentences || [];
+    var out = [];
+    pool.forEach(function (st, i) {
+      var opts = shuffle([st].concat(sample(pool.filter(function (x) { return x !== st; }), 3)));
+      out.push(choiceEx(T.sentMeaning, function () { return syr(st.syr, SCRIPT_IDS[i % 3], 'sent'); },
+        opts.map(function (o) { return optText(o.ru); }), opts.indexOf(st), st.ru));
+    });
+    sample(pool, 3).forEach(function (st) {
+      var opts = shuffle([st].concat(sample(pool.filter(function (x) { return x !== st; }), 3)));
+      out.push(choiceEx(T.chooseSentence + ': «' + st.ru + '»', null,
+        opts.map(function (o) { return optSyr(o.syr, state.script); }), opts.indexOf(st), st.tr));
+    });
+    sample(pool, 3).forEach(function (st) { out.push(buildSentenceEx(st, pool)); });
+    return shuffle(out);
+  }
+
+  function buildSentenceEx(st, pool) {
+    var words = st.syr.split(' ');
+    var others = [];
+    pool.forEach(function (x) { if (x !== st) x.syr.split(' ').forEach(function (wd) { if (words.indexOf(wd) === -1 && others.indexOf(wd) === -1) others.push(wd); }); });
+    return { type: 'build', prompt: T.buildSentence + ': «' + st.ru + '»', hintTr: st.tr, target: st.syr, joiner: ' ',
+      tiles: shuffle(words.concat(sample(others, 2))), answerText: st.syr, answerSyr: true };
+  }
+
+  function readingExercises(unit) {
+    var out = [];
+    (unit.questions || []).forEach(function (q) {
+      var opts = shuffle(q.options.map(function (o, i) { return { text: o, ok: i === 0 }; }));
+      var idx = 0; opts.forEach(function (o, i) { if (o.ok) idx = i; });
+      out.push(choiceEx(q.q, null, opts.map(function (o) { return optText(o.text); }), idx, q.options[0]));
+    });
+    var lines = unit.text || [];
+    sample(lines, Math.min(4, lines.length)).forEach(function (st, i) {
+      var opts = shuffle([st].concat(sample(lines.filter(function (x) { return x !== st; }), Math.min(3, lines.length - 1))));
+      out.push(choiceEx(T.sentMeaning, function () { return syr(st.syr, SCRIPT_IDS[i % 3], 'sent'); },
+        opts.map(function (o) { return optText(o.ru); }), opts.indexOf(st), st.ru));
+    });
+    return out;
+  }
+
   function buildEx(wd) {
     var chars = Array.from(wd.syr);
     var extra = sample(D.letters.map(function (l) { return l.ch; }).filter(function (c) { return chars.indexOf(c) === -1; }), 2);
@@ -265,16 +308,17 @@
 
   function testExercises(level) {
     var all = [];
-    level.units.forEach(function (u) {
-      if (u.kind === 'test') return;
+    var units = level.units.filter(function (u) { return u.kind !== 'test'; });
+    var per = Math.max(3, Math.ceil(20 / Math.max(1, units.length)));
+    units.forEach(function (u) {
       var gen = generatorFor(u);
-      all = all.concat(gen(u).filter(function (e) { return e.type !== 'match'; }).slice(0, 3));
+      all = all.concat(gen(u).filter(function (e) { return e.type !== 'match'; }).slice(0, per));
     });
     return sample(all, 20);
   }
 
   function generatorFor(unit) {
-    return { letters: letterExercises, joining: joiningExercises, vowels: vowelExercises, numbers: numberExercises, words: wordExercises }[unit.kind];
+    return { letters: letterExercises, joining: joiningExercises, vowels: vowelExercises, numbers: numberExercises, words: wordExercises, sentences: sentenceExercises, reading: readingExercises }[unit.kind];
   }
 
   // ---------- Theory blocks -----------------------------------------------
@@ -358,6 +402,30 @@
         });
         box.appendChild(pl);
       }
+    }
+    if (unit.table) {
+      var gt = el('table', 'cx-forms cx-grammar');
+      var gb = el('tbody');
+      unit.table.forEach(function (r) { var tr = el('tr'); tr.appendChild(el('th', null, r[0])); tr.appendChild(el('td', null, r[1])); gb.appendChild(tr); });
+      gt.appendChild(gb);
+      var gw = el('div', 'table-wrap'); gw.appendChild(gt); box.appendChild(gw);
+    }
+    if (unit.kind === 'sentences' || unit.kind === 'reading') {
+      var lines = unit.kind === 'sentences' ? unit.sentences : unit.text;
+      box.appendChild(el('h3', 'cx-subhead', unit.kind === 'sentences' ? T.examples : T.text));
+      var ul2 = el('ol', 'cx-phrases' + (unit.kind === 'reading' ? ' cx-text' : ''));
+      lines.forEach(function (st) {
+        var li = el('li');
+        if (unit.allScripts) {
+          var row = el('div', 'cx-line-scripts');
+          SCRIPT_IDS.forEach(function (sid) { var c = el('div', 'cx-line-script'); c.appendChild(syr(st.syr, sid, 'word')); c.appendChild(el('span', 'cx-cell-label', scriptName(sid))); row.appendChild(c); });
+          li.appendChild(row);
+        } else li.appendChild(syr(st.syr, state.script, 'word'));
+        li.appendChild(el('span', 'cx-word-tr', st.tr + (st.west ? ' · ' + T.west + ': ' + st.west : '')));
+        li.appendChild(el('span', 'cx-word-ru', st.ru));
+        ul2.appendChild(li);
+      });
+      box.appendChild(ul2);
     }
     return box;
   }
@@ -599,6 +667,8 @@
       stage.appendChild(el('p', 'cx-prompt', ex.prompt));
       if (ex.show) { var sh = el('div', 'cx-show'); sh.appendChild(ex.show()); stage.appendChild(sh); }
       if (ex.hint) stage.appendChild(el('p', 'cx-hint', '«' + ex.hint + '»'));
+      if (ex.hintTr) stage.appendChild(el('p', 'cx-hint', ex.hintTr));
+      if (shell.getBoundingClientRect().top < 0) shell.scrollIntoView({ block: 'start' });
       if (ex.type === 'choice') renderChoice(ex);
       else if (ex.type === 'type') renderType(ex);
       else if (ex.type === 'build') renderBuild(ex);
@@ -675,6 +745,7 @@
         var b = el('button', 'cx-tile');
         b.type = 'button';
         b.appendChild(syr(c, state.script));
+        if (ex.joiner) b.classList.add('cx-tile-word');
         b.addEventListener('click', function () { built.push(i); b.disabled = true; draw(); });
         tileButtons.push(b);
         tiles.appendChild(b);
@@ -685,7 +756,7 @@
         var i = built.pop(); if (i !== undefined) tileButtons[i].disabled = false; draw();
       });
       var check = btn(T.check, 'btn-blue', function () {
-        var v = built.map(function (i) { return ex.tiles[i]; }).join('');
+        var v = built.map(function (i) { return ex.tiles[i]; }).join(ex.joiner || '');
         var ok = v === ex.target;
         tileButtons.forEach(function (b) { b.disabled = true; });
         erase.disabled = true; check.disabled = true;
@@ -696,7 +767,7 @@
       acts.appendChild(erase); acts.appendChild(check);
       stage.appendChild(acts);
       function draw() {
-        answerLine.textContent = built.map(function (i) { return ex.tiles[i]; }).join('');
+        answerLine.textContent = built.map(function (i) { return ex.tiles[i]; }).join(ex.joiner || '');
         check.disabled = !built.length;
       }
       draw();
@@ -796,6 +867,7 @@
       cert.appendChild(el('p', 'cx-cert-name', state.name || '—'));
       cert.appendChild(el('p', null, 'успешно завершил(а) ' + (M.certCourse || 'онлайн-курс современного ассирийского языка') + ' уровня ' + level.code + ' (' + level.title.toLowerCase() + ') по шкале CEFR, включая чтение в письменностях эстрангело, серто и маднхая' + (M.certExtra ? ', ' + M.certExtra : '') + '.'));
       cert.appendChild(el('p', 'muted', 'Итоговый тест: ' + c.score + '% · ' + c.date));
+      cert.appendChild(el('p', 'cx-cert-author', 'Автор курса: Michael Baddu'));
     }
     form.addEventListener('submit', function (e) { e.preventDefault(); state.name = input.value.trim().slice(0, 80); save(); draw(); });
     draw();

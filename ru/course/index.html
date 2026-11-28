@@ -35,8 +35,9 @@
   <link rel="stylesheet" href="../../css/course.css">
   <script src="../../js/app.js" defer></script>
   <script src="../../js/course-data.js" defer></script>
+  <script src="../../js/course-levels.js" defer></script>
   <script src="../../js/course.js" defer></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Course","name":"Онлайн-курс ассирийского языка","description":"Бесплатный интерактивный курс современного ассирийского (сурэт) по уровням CEFR A1–C2: алфавит в письменностях эстрангело, серто и маднхая, лексика, упражнения с проверкой и сохранением прогресса.","inLanguage":"ru","url":"https://www.example.org/ru/course","isAccessibleForFree":true,"educationalLevel":"CEFR A1–C2","teaches":"Modern Assyrian (Sureth), Syriac alphabet: Estrangela, Serto, Madnhaya","provider":{"@type":"EducationalOrganization","name":"Школа современного ассирийского языка","url":"https://www.example.org/"},"hasCourseInstance":{"@type":"CourseInstance","courseMode":"online","courseWorkload":"PT10H"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Course","name":"Онлайн-курс ассирийского языка","description":"Бесплатный интерактивный курс современного ассирийского (сурэт) по уровням CEFR A1–C2: алфавит в письменностях эстрангело, серто и маднхая, лексика, упражнения с проверкой и сохранением прогресса.","inLanguage":"ru","url":"https://www.example.org/ru/course","isAccessibleForFree":true,"educationalLevel":"CEFR A1–C2","teaches":"Modern Assyrian (Sureth), Syriac alphabet: Estrangela, Serto, Madnhaya","author":{"@type":"Person","name":"Michael Baddu"},"provider":{"@type":"EducationalOrganization","name":"Школа современного ассирийского языка","url":"https://www.example.org/"},"hasCourseInstance":{"@type":"CourseInstance","courseMode":"online","courseWorkload":"PT10H"}}</script>
 </head>
 <body class="lang-ru">
 <a class="skip-link" href="#main">Перейти к содержимому</a>
@@ -50,9 +51,9 @@
 
     <nav class="main-nav" aria-label="Меню">
       <a href="../index.html" class="" >Главная</a>
+      <a href="../courses/index.html" class="active">Курсы</a>
       <a href="../directory/index.html" class="" >Каталог</a>
       <a href="../assyrian/index.html" class="" >Ассирийский</a>
-      <a href="index.html" class="active" aria-current=page>Курс</a>
       <a href="../syriac/index.html" class="" >Сирийский</a>
       <a href="../faq/index.html" class="" >Вопросы</a>
     </nav>
@@ -90,9 +91,9 @@
         <summary aria-label="Меню"><span></span><span></span><span></span></summary>
         <nav class="mobile-nav" aria-label="Меню">
           <a href="../index.html">Главная</a>
+          <a href="../courses/index.html">Курсы</a>
           <a href="../directory/index.html">Каталог</a>
           <a href="../assyrian/index.html">Ассирийский</a>
-          <a href="index.html">Курс</a>
           <a href="../about/index.html">О школе</a>
           <a href="../syriac/index.html">Сирийский</a>
           <a href="../faq/index.html">Вопросы</a>
@@ -106,9 +107,11 @@
 
 <section class="page-head">
   <div class="container narrow">
+    <p class="cx-crumb"><a href="../courses/index.html">← Все курсы</a></p>
     <p class="eyebrow-script" aria-hidden="true"><span lang="syr" dir="rtl">ܝܘܠܦܢܐ ܕܠܫܢܐ ܐܬܘܪܝܐ</span></p>
     <h1>Онлайн-курс ассирийского языка</h1>
-    <p class="lead">Учите современный ассирийский (сурэт) прямо на сайте: уроки, упражнения с мгновенной проверкой и прогресс, который сохраняется в вашем браузере. Курс построен по Общеевропейской шкале языковых компетенций (CEFR): шесть уровней от A1 до C2.</p>
+    <p class="lead">Учите современный ассирийский (сурэт) по иракской норме прямо на сайте: уроки, упражнения с мгновенной проверкой и прогресс, который сохраняется в вашем браузере. Курс построен по Общеевропейской шкале языковых компетенций (CEFR): шесть уровней от A1 до C2.</p>
+    <p class="cx-author">Автор курса: <strong lang="en" dir="ltr">Michael Baddu</strong></p>
     <ul class="cx-scripts-intro">
       <li><span lang="syr" dir="rtl" class="syr s-estrangela">ܐܒܓܕ</span><strong>Эстрангело</strong><span>древнее письмо Эдессы, заголовки и надписи</span></li>
       <li><span lang="syr" dir="rtl" class="syr s-serto">ܐܒܓܕ</span><strong>Серто</strong><span>западное письмо, туройо и западная церковь</span></li>
@@ -122,7 +125,7 @@
     <div id="course-app" class="cx">
       <noscript><p class="cx-intro">Для интерактивного курса нужен JavaScript. Включите его в настройках браузера.</p></noscript>
     </div>
-    <p class="fine-print cx-disclaimer">Курс бесплатный и находится в разработке. Чтение дано по урмийской и иракской норме; в других диалектах произношение может отличаться. Нашли ошибку? Напишите нам: <a href="mailto:info@example.org" dir="ltr">info@example.org</a></p>
+    <p class="fine-print cx-disclaimer">Курс бесплатный и находится в разработке. Чтение дано по иракской норме сурэт; в других диалектах произношение может отличаться. Нашли ошибку? Напишите нам: <a href="mailto:info@example.org" dir="ltr">info@example.org</a></p>
   </div>
 </section>
 
@@ -148,7 +151,7 @@
       <h2>О школе</h2>
       <a href="../about/index.html">О школе</a>
       <a href="../assyrian/index.html">Ассирийский</a>
-      <a href="index.html">Курс</a>
+      <a href="../courses/index.html">Курсы</a>
       <a href="../syriac/index.html">Сирийский</a>
       <a href="../faq/index.html">Частые вопросы</a>
       <a href="../submit/index.html">Разместить</a>
