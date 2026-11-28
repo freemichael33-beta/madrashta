@@ -371,11 +371,12 @@
       top.appendChild(el('span', 'cx-level-code', lv.code));
       var tt = el('div', 'cx-level-titles');
       tt.appendChild(el('strong', null, lv.title));
-      tt.appendChild(el('span', 'cx-level-cam', lv.cambridge));
+      tt.appendChild(el('span', 'cx-level-cam', 'CEFR ' + lv.code + ' · ' + lv.cefr));
       top.appendChild(tt);
       top.appendChild(el('span', 'badge ' + (lv.status === 'open' ? 'badge-course' : 'badge-school'), lv.status === 'open' ? T.open : T.soon));
       li.appendChild(top);
       li.appendChild(el('p', 'cx-level-sum', lv.summary));
+      if (lv.can) li.appendChild(el('p', 'cx-level-can', 'Цель уровня по CEFR: «' + lv.can + '»'));
       if (lv.status === 'open') {
         var pr = levelProgress(lv);
         var bar = el('div', 'cx-bar');

@@ -168,3 +168,4 @@
   .site-header, .site-footer, .page-head, .cx-disclaimer, .no-print, .cx-back { display: none !important; }
   .cx-cert { border-color: #000; }
 }
+.cx-level-can { margin: 6px 0 0; font-size: .9rem; color: var(--blue-800); font-style: italic; }
