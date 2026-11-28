@@ -9,6 +9,7 @@
   vowels are taught separately.
   Reading: tr = Latin (common Turoyo Latin spelling), cy = Cyrillic.
   Spelling in Syriac script follows the usual etymological (Classical) spelling.
+  Course author: Michael Baddu.
   All Turoyo vocabulary here must be checked by a native speaker before release.
 */
 window.COURSE_DATA = (function () {
@@ -20,7 +21,8 @@ window.COURSE_DATA = (function () {
     exportName: 'madrashta-turoyo-progress.json',
     certOrg: 'Школа современного ассирийского языка',
     certCourse: 'онлайн-курс языка туройо',
-    courseName: 'Туройо'
+    courseName: 'Туройо',
+    author: 'Michael Baddu'
   };
 
   // 22 letters with West Syriac names. join: false = does not connect to the left.

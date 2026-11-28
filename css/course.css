@@ -173,3 +173,6 @@
 .cx-readings .cx-script { min-height: 40px; }
 .cx-notes { margin: 0 0 16px; padding-inline-start: 20px; max-width: 70ch; }
 .cx-notes li { margin-bottom: 6px; }
+.cx-author { margin: 0 0 16px; color: var(--muted); }
+.cx-author strong { color: var(--text); }
+.cx-cert-author { margin: 12px 0 0; font-weight: 600; }
