@@ -6,7 +6,7 @@
 
   Every item has the East Syriac reading in tr and the West Syriac reading in
   r.west.tr (the engine shows the tradition the learner selects).
-  Syriac is unpointed (only seyame on plurals) so it renders in all three scripts.
+  Syriac is unpointed (only seyame on plurals) so it renders cleanly in Estrangela.
 
   Written from general knowledge, without checking sources: readings,
   translations and the Peshitta / liturgical lines must be reviewed by a
@@ -375,7 +375,7 @@
         { id: 'u1', kind: 'words', words: 'theology', title: 'Богословский словарь',
           intro: 'Сирийское богословие пользуется собственными терминами: ܟܝܢܐ kyānā / kyono «природа», ܩܢܘܡܐ qnōmā / qnumo «ипостась», ܦܪܨܘܦܐ parṣōpā / farṣufo «лицо». Церковь Востока говорит о двух природах и двух кномах в одном парцопе, Сирийская православная церковь — об одной природе воплощённого Слова. Курс объясняет термины, а не спор.' },
         { id: 'u2', kind: 'reading', title: 'Чтение: Символ веры (начало)',
-          intro: 'Начало Никео-Константинопольского Символа веры в сирийском литургическом переводе. Формулировки в изданиях восточной и западной церквей немного различаются; текст требует сверки с богослужебной книгой.',
+          intro: 'Начало Никео-Константинопольского Символа веры в сирийском литургическом переводе. Формулировки в изданиях восточной и западной церквей немного различаются.',
           text: [
             s('ܡܗܝܡܢܝܢܢ ܒܚܕ ܐܠܗܐ', 'Mhaymnīnan b-ḥad alāhā,', 'Mhaymninan b-ḥad aloho,', 'Веруем во единого Бога,'),
             s('ܐܒܐ ܐܚܝܕ ܟܠ', 'abbā aḥīdh kōl,', 'abo aḥidh kul,', 'Отца Вседержителя,'),
@@ -444,8 +444,7 @@
         { id: 'u3', kind: 'words', words: 'versions', title: 'Версии Писания',
           intro: 'Сирийская Библия существует в нескольких версиях: Пешитта (ܦܫܝܛܬܐ «простая») — общая для всех сирийских церквей; Диатессарон Татиана — свод четырёх Евангелий; Харклеянская (616 г.) — дословный перевод с греческого.' },
         { id: 'u4', kind: 'reading', title: 'Чтение: пролог Иоанна (Ин 1:1–5)',
-          intro: 'Пролог Евангелия от Иоанна по Пешитте. Сравните чтение в обеих традициях и во всех трёх письменностях.',
-          allScripts: true,
+          intro: 'Пролог Евангелия от Иоанна по Пешитте. Сравните чтение в обеих традициях.',
           text: [
             s('ܒܪܫܝܬ ܐܝܬܘܗܝ ܗܘܐ ܡܠܬܐ', 'Brēshīth ithawhī wā melthā,', 'Breshith ithaw(hi) wo meltho,', 'В начале было Слово,'),
             s('ܘܗܘ ܡܠܬܐ ܐܝܬܘܗܝ ܗܘܐ ܠܘܬ ܐܠܗܐ', 'w-hū melthā ithawhī wā lwāth alāhā,', 'w-hu meltho ithaw(hi) wo lwoth aloho,', 'и Слово было у Бога,'),

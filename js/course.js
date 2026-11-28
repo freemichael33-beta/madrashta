@@ -225,18 +225,18 @@
     var pool = unit.letters.map(letterById).map(function (x) { return R(x); });
     var out = [];
     pool.forEach(function (l, i) {
-      var s = SCRIPT_IDS[i % 3];
+      var s = SCRIPT_IDS[i % SCRIPT_IDS.length];
       var opts = letterOptions(l, pool, 4);
       out.push(choiceEx(T.whichLetter, function () { return syr(l.ch, s, 'big'); },
         opts.map(function (o) { return optText(o.name + ' (' + o.cy + ')'); }), idx(opts, l), l.name));
     });
     pool.forEach(function (l, i) {
-      var s = SCRIPT_IDS[(i + 1) % 3];
+      var s = SCRIPT_IDS[(i + 1) % SCRIPT_IDS.length];
       var opts = letterOptions(l, pool, 4);
       out.push(choiceEx(T.findLetter + ' «' + l.name + '» (' + scriptName(s) + ')', null,
         opts.map(function (o) { return optSyr(o.ch, s); }), idx(opts, l), l.name));
     });
-    sample(pool, Math.min(4, pool.length)).forEach(function (l) {
+    if (SCRIPT_IDS.length > 1) sample(pool, Math.min(4, pool.length)).forEach(function (l) {
       var from = pick(SCRIPT_IDS), to = otherScript(from);
       var opts = letterOptions(l, pool, 4);
       out.push(choiceEx(T.sameIn + ' ' + scriptName(to), function () { return syr(l.ch, from, 'big'); },
@@ -248,9 +248,14 @@
         opts.map(function (o) { return optText(o.tr); }), idx(opts, l), l.tr));
     });
     var pairs = sample(pool, Math.min(4, pool.length));
-    var a = pick(SCRIPT_IDS), b = otherScript(a);
-    out.push({ type: 'match', prompt: T.match + ': ' + scriptName(a) + ' ↔ ' + scriptName(b),
-      pairs: pairs.map(function (l) { return { key: l.id, left: optSyr(l.ch, a), right: optSyr(l.ch, b) }; }) });
+    if (SCRIPT_IDS.length > 1) {
+      var a = pick(SCRIPT_IDS), b = otherScript(a);
+      out.push({ type: 'match', prompt: T.match + ': ' + scriptName(a) + ' ↔ ' + scriptName(b),
+        pairs: pairs.map(function (l) { return { key: l.id, left: optSyr(l.ch, a), right: optSyr(l.ch, b) }; }) });
+    } else {
+      out.push({ type: 'match', prompt: T.match,
+        pairs: pairs.map(function (l) { return { key: l.id, left: optSyr(l.ch, SCRIPT_IDS[0]), right: optText(l.name + ' [' + l.tr + ']') }; }) });
+    }
     return shuffle(out);
   }
 
@@ -294,7 +299,7 @@
     var out = [];
     pool.forEach(function (l, i) {
       var opts = letterOptions(l, pool, 4);
-      out.push(choiceEx(T.numberOf, function () { return syr(l.ch, SCRIPT_IDS[i % 3], 'big'); },
+      out.push(choiceEx(T.numberOf, function () { return syr(l.ch, SCRIPT_IDS[i % SCRIPT_IDS.length], 'big'); },
         opts.map(function (o) { return optText(String(o.num)); }), idx(opts, l), String(l.num)));
     });
     sample(pool, 4).forEach(function (l) {
@@ -310,7 +315,7 @@
     var pool = wordList(unit);
     var out = [];
     pool.forEach(function (wd, i) {
-      var s = SCRIPT_IDS[i % 3];
+      var s = SCRIPT_IDS[i % SCRIPT_IDS.length];
       var opts = wordOptions(wd, pool, 4);
       out.push(choiceEx(T.meaning, function () { return syr(wd.syr, s, 'big'); },
         opts.map(function (o) { return optText(o.ru); }), idx(opts, wd), wd.ru));
@@ -337,7 +342,7 @@
     var out = [];
     pool.forEach(function (st, i) {
       var opts = shuffle([st].concat(sample(pool.filter(function (x) { return x !== st; }), 3)));
-      out.push(choiceEx(T.sentMeaning, function () { return syr(st.syr, SCRIPT_IDS[i % 3], 'sent'); },
+      out.push(choiceEx(T.sentMeaning, function () { return syr(st.syr, SCRIPT_IDS[i % SCRIPT_IDS.length], 'sent'); },
         opts.map(function (o) { return optText(o.ru); }), opts.indexOf(st), st.ru));
     });
     sample(pool, 3).forEach(function (st) {
@@ -367,7 +372,7 @@
     var lines = (unit.text || []).map(function (x) { return R(x); });
     sample(lines, Math.min(4, lines.length)).forEach(function (st, i) {
       var opts = shuffle([st].concat(sample(lines.filter(function (x) { return x !== st; }), Math.min(3, lines.length - 1))));
-      out.push(choiceEx(T.sentMeaning, function () { return syr(st.syr, SCRIPT_IDS[i % 3], 'sent'); },
+      out.push(choiceEx(T.sentMeaning, function () { return syr(st.syr, SCRIPT_IDS[i % SCRIPT_IDS.length], 'sent'); },
         opts.map(function (o) { return optText(o.ru); }), opts.indexOf(st), st.ru));
     });
     return out;
@@ -511,6 +516,7 @@
   // ---------- Script switcher ---------------------------------------------
   function scriptSwitcher(onChange) {
     var wrap = el('div', 'cx-scripts');
+    if (D.scripts.length < 2) { wrap.hidden = true; return wrap; }
     wrap.setAttribute('role', 'radiogroup');
     wrap.setAttribute('aria-label', T.script);
     D.scripts.forEach(function (s) {
@@ -559,7 +565,7 @@
   function renderOverview() {
     root.textContent = '';
     var head = el('div', 'cx-toolbar');
-    head.appendChild(el('span', 'cx-toolbar-label', T.script + ':'));
+    if (D.scripts.length > 1) head.appendChild(el('span', 'cx-toolbar-label', T.script + ':'));
     head.appendChild(scriptSwitcher(renderOverview));
     if (READINGS.length) {
       head.appendChild(el('span', 'cx-toolbar-label', T.readingLabel + ':'));
@@ -957,7 +963,7 @@
       cert.appendChild(el('h2', null, 'Сертификат'));
       cert.appendChild(el('p', null, 'подтверждает, что'));
       cert.appendChild(el('p', 'cx-cert-name', state.name || '—'));
-      cert.appendChild(el('p', null, 'успешно завершил(а) ' + (M.certCourse || 'онлайн-курс современного ассирийского языка') + ' уровня ' + level.code + ' (' + level.title.toLowerCase() + ') по шкале CEFR, включая чтение в письменностях эстрангело, серто и маднхая' + (M.certExtra ? ', ' + M.certExtra : '') + '.'));
+      cert.appendChild(el('p', null, 'успешно завершил(а) ' + (M.certCourse || 'онлайн-курс современного ассирийского языка') + ' уровня ' + level.code + ' (' + level.title.toLowerCase() + ') по шкале CEFR, включая чтение ' + (M.certScripts || 'в письменностях эстрангело, серто и маднхая') + (M.certExtra ? ', ' + M.certExtra : '') + '.'));
       cert.appendChild(el('p', 'muted', 'Итоговый тест: ' + c.score + '% · ' + c.date));
       cert.appendChild(el('p', 'cx-cert-author', 'Автор курса: ' + (M.author || 'Michael Baddu')));
     }
