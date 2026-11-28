@@ -802,7 +802,7 @@
     function draw() {
       cert.textContent = '';
       cert.appendChild(syr('ܡܕܪܫܬܐ', 'estrangela', 'cx-cert-script'));
-      cert.appendChild(el('p', 'cx-cert-org', 'Школа современного ассирийского языка'));
+      cert.appendChild(el('p', 'cx-cert-org', 'Madrashta — Школа ассирийского языка'));
       cert.appendChild(el('h2', null, 'Сертификат'));
       cert.appendChild(el('p', null, 'подтверждает, что'));
       cert.appendChild(el('p', 'cx-cert-name', state.name || '—'));
