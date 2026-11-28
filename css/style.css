@@ -484,7 +484,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--b
 .footer-brand .footer-tagline { margin-top: 10px; color: var(--white); font-weight: 600; font-size: .95rem; }
 .footer-brand p { margin-top: 16px; max-width: 36ch; color: var(--blue-300); }
 .brand-invert, .brand-invert:hover { color: var(--white); }
-.brand-invert img { background: var(--white); border-radius: 10px; padding: 3px; }
+.brand-invert img { background: var(--white); border-radius: 10px; padding: 5px; }
 .footer-credit { display: flex; align-items: center; gap: 12px; margin-top: 24px; font-size: .9rem; color: var(--blue-300); }
 .footer-credit img { flex: none; filter: drop-shadow(0 0 1px rgba(255, 255, 255, .6)); }
 .footer-credit strong { display: block; color: var(--white); font-size: 1rem; }
