@@ -17,6 +17,7 @@ Interface languages: English, Ukrainian, Russian, German, Swedish, French, Arabi
 - [FAQ](https://www.example.org/en/faq): what Modern Assyrian is, where and how to learn it
 - [Assyrian language and dialects](https://www.example.org/en/assyrian): history of Aramaic since the Assyrian Empire, a timeline and a table of Sureth dialects
 - [Classical Syriac](https://www.example.org/en/syriac): a short academic history of Classical Syriac and a table of universities where it is taught
+- [Online course (Russian)](https://www.example.org/ru/course): free interactive Modern Assyrian course, CEFR A1–C2, Syriac alphabet in Estrangela, Serto and Madnhaya, progress saved in the browser
 - [About](https://www.example.org/en/about): mission and values
 - [Get listed](https://www.example.org/en/submit): how schools and teachers ask to be listed by email (free)
 
