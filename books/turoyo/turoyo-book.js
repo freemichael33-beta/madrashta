@@ -27,7 +27,7 @@ STR.forEach((s, i) => { MAP.en[s] = TR.en[i]; MAP.uk[s] = TR.uk[i]; });
 const INTRO = { en: 'intro-en.html', ru: 'intro-ru.html', uk: 'intro-uk.html' };
 
 let ED = 'ru';
-const L = s => (s == null || ED === 'ru' || !/[\u0400-\u04ff]/.test(s)) ? s : (MAP[ED][s] != null ? MAP[ED][s] : (() => { throw new Error('missing ' + ED + ' translation: ' + s); })());
+const L = s => (s != null && ED === 'ru') ? ruCy(String(s)) : (s == null || !/[\u0400-\u04ff]/.test(s)) ? s : (MAP[ED][s] != null ? MAP[ED][s] : (() => { throw new Error('missing ' + ED + ' translation: ' + s); })());
 const T3 = (ru, uk, en) => ED === 'uk' ? uk : ED === 'en' ? en : ru;
 
 // Turoyo Latin → Cyrillic (Russian or Ukrainian letters).
@@ -44,8 +44,15 @@ function toCyr(tr, uk) {
   for (let i = 0; i < x.length;) { const h = P.find(q => x.substr(i, q[0].length) === q[0]); if (h) { o += h[1]; i += h[0].length; } else { o += x[i]; i++; } }
   return o;
 }
+// Russian edition: no Latin. "shlomo («шломо»)" keeps only «шломо», other Latin words go to Cyrillic.
+const LAT = "A-Za-z\u00C0-\u024F\u1E00-\u1EFF\u02BE\u02BF";
+function ruCy(s) {
+  s = s.replace(new RegExp('[' + LAT + '][' + LAT + "\\s?!.,'’-]*\\s*\\(«([^»]*)»\\)", 'g'), (m, c) => '«' + c + '»');
+  return s.replace(new RegExp('[' + LAT + ']+', 'g'), (w, i) => (/\d/.test(s[i + w.length] || '') || /^[A-Z]{2,}$/.test(w)) ? w : toCyr(w, false));
+}
 // Cyrillic reading for the current edition ('' in the English edition).
 const CY = x => ED === 'en' ? '' : ED === 'uk' ? toCyr(x.tr, true) : (x.cy || toCyr(x.tr, false));
+const LN = l => ED === 'ru' ? CYN(l) : l.name;
 const CYN = l => ED === 'en' ? '' : ED === 'uk' ? toCyr(l.name, true) : l.cy;
 const EN = x => esc(x.en != null ? x.en : toEn(x.tr));
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -60,7 +67,9 @@ function form(ch, pos, joins) {
 function rng(seed) { let x = seed; return () => (x = (x * 1103515245 + 12345) % 2147483648) / 2147483648; }
 function shuffled(a, seed) { const r = rng(seed); a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 // reading line: Latin, then Cyrillic (ru/uk), then EN
-const READ = x => `${esc(x.tr)}<br><small>${CY(x) ? esc(CY(x)) + ' · ' : ''}EN: ${EN(x)}</small>`;
+const ABC = k => ED === 'ru' ? 'абвгдежзик'[k] : String.fromCharCode(97 + k);
+const RCY = x => (ED === 'ru') ? CY(x) : x.tr;
+const READ = x => (ED === 'ru') ? esc(CY(x)) : `${esc(x.tr)}<br><small>${CY(x) ? esc(CY(x)) + ' · ' : ''}EN: ${EN(x)}</small>`;
 
 function preface() {
   if (ED === 'en') return `<section class="page"><h2>Preface</h2>
@@ -77,7 +86,7 @@ function preface() {
 </section>`;
   return `<section class="page"><h2>Предисловие</h2>
 <p>Эта книга повторяет онлайн-курс языка туройо (сурайт) с сайта Madrashta. Материал разбит по шести уровням Общеевропейской шкалы языковых компетенций (CEFR): от A1, где вы учите алфавит, до C2, где читаете о литературе на туройо.</p>
-<p>Весь сирийский текст в книге набран западным письмом <b>серто</b>, традиционным письмом туройо. Чтение дано тремя способами: распространённой латиницей туройо (š, ṯ, ḥ, ṭ, ṣ, ʿ, x), кириллицей и простой английской латиницей (EN). Это русское издание книги.</p>
+<p>Весь сирийский текст в книге набран западным письмом <b>серто</b>, традиционным письмом туройо. Чтение каждого слова и предложения дано кириллицей. Это русское издание книги.</p>
 <p>После каждого урока есть упражнения, ответы к ним собраны в конце книги вместе со словарём всех слов курса. Интерактивные упражнения, тесты и сертификаты доступны на сайте в разделе «Курсы».</p>
 <p class="colophon">Автор курса: Michael Baddu. Шрифты Noto Sans Syriac распространяются по лицензии SIL Open Font License 1.1.</p>
 </section>`;
@@ -107,26 +116,26 @@ function build() {
       if (u.kind === 'letters' || u.kind === 'numbers') {
         body += `<table class="tbl letters"><thead><tr><th>${T3('Буква', 'Літера', 'Letter')}</th><th>${T3('Название', 'Назва', 'Name')}</th><th>${T3('Звук', 'Звук', 'Sound')}</th>` + (u.kind === 'numbers' ? `<th>${T3('Число', 'Число', 'Number')}</th>` : '') + '</tr></thead><tbody>';
         u.letters.map(letter).forEach(l => {
-          body += `<tr><td class="big">${sy(l.ch)}</td><td>${esc(l.name)}${CYN(l) ? '<br><small>' + esc(CYN(l)) + '</small>' : ''}</td><td><small>[${esc(L(l.tr))}]${EN(l).trim() ? ' EN: ' + EN(l) + '.' : ''} ${esc(L(l.sound))}</small></td>${u.kind === 'numbers' ? '<td>' + l.num + '</td>' : ''}</tr>`;
+          body += `<tr><td class="big">${sy(l.ch)}</td><td>${(ED === 'ru') ? esc(CYN(l)) : esc(l.name) + (CYN(l) ? '<br><small>' + esc(CYN(l)) + '</small>' : '')}</td><td><small>${(ED === 'ru') ? '' : '[' + esc(L(l.tr)) + ']' + (EN(l).trim() ? ' EN: ' + EN(l) + '.' : '') + ' '}${esc(L(l.sound))}</small></td>${u.kind === 'numbers' ? '<td>' + l.num + '</td>' : ''}</tr>`;
         });
         body += '</tbody></table>';
         const ls = shuffled(u.letters.map(letter), li * 100 + ui);
-        exs.push({ q: u.kind === 'numbers' ? T3('Напишите, какое число обозначает каждая буква.', 'Напишіть, яке число позначає кожна літера.', 'Write the number each letter stands for.') : T3('Назовите буквы.', 'Назвіть літери.', 'Name the letters.'), items: ls.map(l => sy(l.ch, 'ex')), ans: ls.map(l => u.kind === 'numbers' ? l.num : l.name).join(', ') });
+        exs.push({ q: u.kind === 'numbers' ? T3('Напишите, какое число обозначает каждая буква.', 'Напишіть, яке число позначає кожна літера.', 'Write the number each letter stands for.') : T3('Назовите буквы.', 'Назвіть літери.', 'Name the letters.'), items: ls.map(l => sy(l.ch, 'ex')), ans: ls.map(l => u.kind === 'numbers' ? l.num : LN(l)).join(', ') });
         exs.push({ q: T3('Перепишите каждую букву пять раз в тетради, проговаривая её название.', 'Перепишіть кожну літеру п\'ять разів у зошит, промовляючи її назву.', 'Copy each letter five times in your notebook, saying its name aloud.'), items: [], ans: '—' });
       } else if (u.kind === 'joining') {
         body += `<table class="tbl"><thead><tr><th></th><th>${T3('отдельная', 'окрема', 'isolated')}</th><th>${T3('начальная', 'початкова', 'initial')}</th><th>${T3('срединная', 'серединна', 'medial')}</th><th>${T3('конечная', 'кінцева', 'final')}</th></tr></thead><tbody>`;
         u.letters.map(letter).forEach(l => {
-          body += `<tr><th>${esc(l.name)}${l.join ? '' : ' *'}</th>` + ['isolated', 'initial', 'medial', 'final'].map(p => `<td class="big">${sy(form(l.ch, p, l.join))}</td>`).join('') + '</tr>';
+          body += `<tr><th>${esc(LN(l))}${l.join ? '' : ' *'}</th>` + ['isolated', 'initial', 'medial', 'final'].map(p => `<td class="big">${sy(form(l.ch, p, l.join))}</td>`).join('') + '</tr>';
         });
         body += '</tbody></table><p class="note">* ' + T3('не соединяется со следующей буквой.', 'не з\'єднується з наступною літерою.', 'does not join the next letter.') + '</p>';
         const ls = shuffled(u.letters.map(letter), 7);
-        exs.push({ q: T3('Соединяется ли буква со следующей? Ответьте «да» или «нет».', 'Чи з\'єднується літера з наступною? Дайте відповідь «так» або «ні».', 'Does the letter join the next one? Answer "yes" or "no".'), items: ls.map(l => sy(l.ch, 'ex')), ans: ls.map(l => l.name + ': ' + (l.join ? T3('да', 'так', 'yes') : T3('нет', 'ні', 'no'))).join('; ') });
+        exs.push({ q: T3('Соединяется ли буква со следующей? Ответьте «да» или «нет».', 'Чи з\'єднується літера з наступною? Дайте відповідь «так» або «ні».', 'Does the letter join the next one? Answer "yes" or "no".'), items: ls.map(l => sy(l.ch, 'ex')), ans: ls.map(l => LN(l) + ': ' + (l.join ? T3('да', 'так', 'yes') : T3('нет', 'ні', 'no'))).join('; ') });
       } else if (u.kind === 'vowels') {
         body += `<table class="tbl"><thead><tr><th>${T3('Слог', 'Склад', 'Syllable')}</th><th>${T3('Огласовка', 'Огласовка', 'Vowel sign')}</th><th>${T3('Чтение', 'Читання', 'Reading')}</th><th>${T3('Как выглядит', 'Як виглядає', 'What it looks like')}</th></tr></thead><tbody>`;
         D.vowels.forEach(v => { body += `<tr><td class="big">${sy(v.syl)}</td><td>${esc(L(v.name))}</td><td>${READ(v)}</td><td><small>${esc(L(v.note))}</small></td></tr>`; });
         body += '</tbody></table>';
         const vs = shuffled(D.vowels, 11);
-        exs.push({ q: T3('Прочитайте слоги.', 'Прочитайте склади.', 'Read the syllables.'), items: vs.map(v => sy(v.syl, 'ex')), ans: vs.map(v => v.tr).join(', ') });
+        exs.push({ q: T3('Прочитайте слоги.', 'Прочитайте склади.', 'Read the syllables.'), items: vs.map(v => sy(v.syl, 'ex')), ans: vs.map(v => RCY(v)).join(', ') });
       } else if (u.kind === 'words') {
         const ws = D.words[u.words];
         body += `<table class="tbl words"><thead><tr><th>${T3('Слово', 'Слово', 'Word')}</th><th>${T3('Чтение', 'Читання', 'Reading')}</th><th>${T3('Перевод', 'Переклад', 'Meaning')}</th></tr></thead><tbody>`;
@@ -138,11 +147,11 @@ function build() {
           body += '</tbody></table>';
         }
         const a = shuffled(ws, li * 31 + ui).slice(0, 6);
-        exs.push({ q: T3('Прочитайте и переведите.', 'Прочитайте й перекладіть.', 'Read and translate.'), items: a.map(x => sy(x.syr, 'ex')), ans: a.map(x => x.tr + ' — ' + L(x.ru)).join('; ') });
+        exs.push({ q: T3('Прочитайте и переведите.', 'Прочитайте й перекладіть.', 'Read and translate.'), items: a.map(x => sy(x.syr, 'ex')), ans: a.map(x => RCY(x) + ' — ' + L(x.ru)).join('; ') });
         const b = shuffled(ws, li * 37 + ui + 3).slice(0, 5);
         exs.push({ q: T3('Напишите сирийскими буквами.', 'Напишіть сирійськими літерами.', 'Write in Syriac letters.'), items: b.map(x => esc(L(x.ru))), ans: b.map(x => sy(x.syr)).join(', ') });
         const c = shuffled(ws, li * 41 + ui + 5).slice(0, 5); const cr = shuffled(c, 99);
-        exs.push({ q: T3('Соедините слово и перевод.', 'З\'єднайте слово й переклад.', 'Match each word with its meaning.'), match: { left: c.map(x => sy(x.syr, 'ex')), right: cr.map(x => esc(L(x.ru))) }, ans: c.map((x, i) => (i + 1) + '–' + String.fromCharCode(97 + cr.indexOf(x))).join(', ') });
+        exs.push({ q: T3('Соедините слово и перевод.', 'З\'єднайте слово й переклад.', 'Match each word with its meaning.'), match: { left: c.map(x => sy(x.syr, 'ex')), right: cr.map(x => esc(L(x.ru))) }, ans: c.map((x, i) => (i + 1) + '–' + ABC(cr.indexOf(x))).join(', ') });
       } else if (u.kind === 'sentences' || u.kind === 'reading') {
         if (u.table) body += '<table class="tbl grammar"><tbody>' + u.table.map(r => `<tr><th>${esc(L(r[0]))}</th><td>${esc(L(r[1]))}</td></tr>`).join('') + '</tbody></table>';
         const lines = u.kind === 'sentences' ? u.sentences : u.text;
@@ -166,7 +175,7 @@ function build() {
           exNo++;
           body += `<div class="ex"><p class="ex-q"><b>${exNo}.</b> ${e.q}</p>`;
           if (e.items && e.items.length) body += '<ol class="ex-items">' + e.items.map(i => `<li>${i}</li>`).join('') + '</ol>';
-          if (e.match) body += '<div class="match"><ol>' + e.match.left.map(i => `<li>${i}</li>`).join('') + '</ol><ol type="a">' + e.match.right.map(i => `<li>${i}</li>`).join('') + '</ol></div>';
+          if (e.match) body += '<div class="match"><ol>' + e.match.left.map(i => `<li>${i}</li>`).join('') + '</ol>' + (ED === 'ru' ? '<ol class="cyr">' : '<ol type="a">') + e.match.right.map((i, k) => `<li>${ED === 'ru' ? ABC(k) + ') ' : ''}${i}</li>`).join('') + '</ol></div>';
           body += '</div>';
           answers.push(`<li value="${exNo}"><small>${lv.code}.${n}</small> ${e.ans}</li>`);
         });
@@ -210,7 +219,7 @@ h1{font-size:30pt;margin:0 0 8pt;color:#0f1f5c}h2{font-size:15pt;margin:0 0 6pt;
 .intro{background:#f0f8f4;border-left:3pt solid #1F8A5B;padding:6pt 10pt;border-radius:4pt}
 .tbl{width:100%;border-collapse:collapse;margin:6pt 0}.tbl th,.tbl td{border-bottom:.6pt solid #dbe3fb;padding:3pt 6pt;text-align:left;vertical-align:middle}.tbl thead th{font-size:8.5pt;color:#4a5a8a}
 .tbl td.big{text-align:right;white-space:nowrap}.letters td:first-child{text-align:center;width:22mm}
-tr{page-break-inside:avoid}.note{font-size:8.5pt;color:#4a5a8a}
+tr{page-break-inside:avoid}ol.cyr{list-style:none;padding-left:1.2em}.note{font-size:8.5pt;color:#4a5a8a}
 .text{direction:rtl;text-align:right;background:#fff8f0;border:1pt solid #f2d9b5;border-radius:6pt;padding:8pt 12pt;line-height:2.2}.tline{margin-left:8pt}
 .ex{page-break-inside:avoid;margin:8pt 0}.ex-q{margin:0 0 3pt}.ex-items{columns:2;margin:0;padding-left:20pt}.ex-items li{padding:2pt 0}
 .match{display:flex;gap:30pt}.match ol{margin:0}
