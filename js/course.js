@@ -10,9 +10,17 @@
   var root = document.getElementById('course-app');
   if (!D || !root) return;
 
-  var STORE_KEY = 'madrashta-course-v1';
+  // Optional per-course settings, so several courses share this engine.
+  // Each course page loads its own data file that sets window.COURSE_DATA.
+  var M = D.meta || {};
+  var STORE_KEY = M.storeKey || 'madrashta-course-v1';
   var PASS = 0.7;
   var SCRIPT_IDS = D.scripts.map(function (s) { return s.id; });
+  var DEFAULT_SCRIPT = M.defaultScript || 'madnhaya';
+  var VOWEL_SCRIPT = M.vowelScript || 'madnhaya';
+  // Reading traditions (e.g. East / West Syriac). Items may carry r: { <id>: { tr, cy, name, ... } }.
+  var READINGS = M.readings || [];
+  var READING_IDS = READINGS.map(function (r) { return r.id; });
 
   var CERT_NOTE = 'Мы работаем над созданием независимого сертификационного центра. Наша цель — чтобы сертификация Madrashta стала признанным стандартом владения сурэт и туройо.';
   var T = {
@@ -33,17 +41,19 @@
     importErr: 'Не удалось прочитать файл.', of: 'из', script: 'Письменность', planned: 'Что будет на уровне',
     forms: ['отдельная', 'начальная', 'срединная', 'конечная'], noJoin: 'не соединяется слева',
     initial: 'начальная', medial: 'срединная', final: 'конечная', isolated: 'отдельная', testIntro: 'Тест',
-    reading: 'Чтение', phrases: 'Фразы для чтения', sentMeaning: 'Что значит это предложение?',
+    reading: 'Чтение', phrases: 'Фразы для чтения', readingLabel: 'Чтение', notes: 'Заметки', sentMeaning: 'Что значит это предложение?',
     chooseSentence: 'Выберите предложение', buildSentence: 'Соберите предложение из слов', text: 'Текст', translation: 'Перевод',
     showTr: 'Показать перевод', grammar: 'Грамматика', examples: 'Примеры', west: 'западное чтение'
   };
+  if (M.strings) Object.keys(M.strings).forEach(function (k) { T[k] = M.strings[k]; });
 
   // ---------- State --------------------------------------------------------
   function loadState() {
     var s = null;
     try { s = JSON.parse(window.localStorage.getItem(STORE_KEY)); } catch (e) { s = null; }
     if (!s || typeof s !== 'object') s = {};
-    if (SCRIPT_IDS.indexOf(s.script) === -1) s.script = 'madnhaya';
+    if (SCRIPT_IDS.indexOf(s.script) === -1) s.script = DEFAULT_SCRIPT;
+    if (READING_IDS.length && READING_IDS.indexOf(s.reading) === -1) s.reading = READING_IDS[0];
     if (!s.done || typeof s.done !== 'object') s.done = {};
     if (typeof s.xp !== 'number') s.xp = 0;
     return s;
@@ -82,6 +92,22 @@
   }
   function sample(a, n) { return shuffle(a).slice(0, n); }
   function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  // Item as read in the selected tradition (fields from item.r[reading] override the defaults).
+  function R(o, reading) {
+    var r = o && o.r && o.r[reading || state.reading];
+    if (!r) return o;
+    var out = {};
+    Object.keys(o).forEach(function (k) { out[k] = o[k]; });
+    Object.keys(r).forEach(function (k) { out[k] = r[k]; });
+    return out;
+  }
+  // Every accepted reading of an item, across all traditions.
+  function acceptAll(o) {
+    var a = [o.tr, o.cy].concat(o.alt || []);
+    if (o.r) Object.keys(o.r).forEach(function (k) { var r = o.r[k]; a = a.concat([r.tr, r.cy], r.alt || []); });
+    return a.filter(Boolean);
+  }
+  function readingName(id) { for (var i = 0; i < READINGS.length; i++) if (READINGS[i].id === id) return READINGS[i].name; return id; }
   function letterById(id) { for (var i = 0; i < D.letters.length; i++) if (D.letters[i].id === id) return D.letters[i]; return null; }
   function scriptName(id) { for (var i = 0; i < D.scripts.length; i++) if (D.scripts[i].id === id) return D.scripts[i].name; return id; }
   function otherScript(s) { return pick(SCRIPT_IDS.filter(function (x) { return x !== s; })); }
@@ -135,12 +161,15 @@
     if (pos === 'final') return ZWJ + ch;
     return ch;
   }
-  function wordList(unit) { return D.words[unit.words] || []; }
+  function wordList(unit) { return (D.words[unit.words] || []).map(function (x) { return R(x); }); }
+  function vowelList(unit) { return ((unit.vowels && D.vowelSets && D.vowelSets[unit.vowels]) || D.vowels).map(function (x) { return R(x); }); }
+  function vowelScript(unit) { return unit.script || VOWEL_SCRIPT; }
   function letterOptions(correct, pool, n) {
     var others = pool.filter(function (l) { return l.id !== correct.id; });
-    if (others.length < n - 1) others = others.concat(D.letters.filter(function (l) { return l.id !== correct.id && pool.indexOf(l) === -1; }));
+    if (others.length < n - 1) others = others.concat(D.letters.filter(function (l) { return l.id !== correct.id && !pool.some(function (p) { return p.id === l.id; }); }).map(function (x) { return R(x); }));
     return shuffle([correct].concat(sample(others, n - 1)));
   }
+  function idx(opts, item) { for (var i = 0; i < opts.length; i++) if (opts[i].id === item.id) return i; return -1; }
   function wordOptions(correct, pool, n) {
     var others = pool.filter(function (x) { return x.id !== correct.id; });
     return shuffle([correct].concat(sample(others, n - 1)));
@@ -155,30 +184,30 @@
   function optSyr(t, s) { return { syr: t, script: s }; }
 
   function letterExercises(unit) {
-    var pool = unit.letters.map(letterById);
+    var pool = unit.letters.map(letterById).map(function (x) { return R(x); });
     var out = [];
     pool.forEach(function (l, i) {
       var s = SCRIPT_IDS[i % 3];
       var opts = letterOptions(l, pool, 4);
       out.push(choiceEx(T.whichLetter, function () { return syr(l.ch, s, 'big'); },
-        opts.map(function (o) { return optText(o.name + ' (' + o.cy + ')'); }), opts.indexOf(l), l.name));
+        opts.map(function (o) { return optText(o.name + ' (' + o.cy + ')'); }), idx(opts, l), l.name));
     });
     pool.forEach(function (l, i) {
       var s = SCRIPT_IDS[(i + 1) % 3];
       var opts = letterOptions(l, pool, 4);
       out.push(choiceEx(T.findLetter + ' «' + l.name + '» (' + scriptName(s) + ')', null,
-        opts.map(function (o) { return optSyr(o.ch, s); }), opts.indexOf(l), l.name));
+        opts.map(function (o) { return optSyr(o.ch, s); }), idx(opts, l), l.name));
     });
     sample(pool, Math.min(4, pool.length)).forEach(function (l) {
       var from = pick(SCRIPT_IDS), to = otherScript(from);
       var opts = letterOptions(l, pool, 4);
       out.push(choiceEx(T.sameIn + ' ' + scriptName(to), function () { return syr(l.ch, from, 'big'); },
-        opts.map(function (o) { return optSyr(o.ch, to); }), opts.indexOf(l), l.name));
+        opts.map(function (o) { return optSyr(o.ch, to); }), idx(opts, l), l.name));
     });
     sample(pool, Math.min(3, pool.length)).forEach(function (l) {
       var opts = letterOptions(l, pool, 4);
       out.push(choiceEx(T.soundOf, function () { return syr(l.ch, pick(SCRIPT_IDS), 'big'); },
-        opts.map(function (o) { return optText(o.tr); }), opts.indexOf(l), l.tr));
+        opts.map(function (o) { return optText(o.tr); }), idx(opts, l), l.tr));
     });
     var pairs = sample(pool, Math.min(4, pool.length));
     var a = pick(SCRIPT_IDS), b = otherScript(a);
@@ -188,7 +217,7 @@
   }
 
   function joiningExercises(unit) {
-    var pool = unit.letters.map(letterById);
+    var pool = unit.letters.map(letterById).map(function (x) { return R(x); });
     var out = [];
     pool.forEach(function (l) {
       out.push(choiceEx(T.joins, function () { return syr(l.ch, pick(SCRIPT_IDS), 'big'); },
@@ -200,40 +229,41 @@
       var s = pick(SCRIPT_IDS);
       var opts = letterOptions(l, joiners, 4);
       out.push(choiceEx(T.formOf + ' (' + T[pos] + ', ' + scriptName(s) + ')', function () { return syr(form(l.ch, pos, true), s, 'big'); },
-        opts.map(function (o) { return optSyr(o.ch, s); }), opts.indexOf(l), l.name));
+        opts.map(function (o) { return optSyr(o.ch, s); }), idx(opts, l), l.name));
     });
     return shuffle(out);
   }
 
-  function vowelExercises() {
+  function vowelExercises(unit) {
     var out = [];
-    D.vowels.forEach(function (v) {
-      var opts = sample(D.vowels.filter(function (x) { return x.id !== v.id; }), 3).concat([v]);
+    var list = vowelList(unit), vs = vowelScript(unit);
+    list.forEach(function (v) {
+      var opts = sample(list.filter(function (x) { return x.id !== v.id; }), 3).concat([v]);
       opts = shuffle(opts);
-      out.push(choiceEx(T.syllable, function () { return syr(v.syl, 'madnhaya', 'big'); },
+      out.push(choiceEx(T.syllable, function () { return syr(v.syl, vs, 'big'); },
         opts.map(function (o) { return optText(o.tr + ' · ' + o.cy); }), opts.indexOf(v), v.tr));
     });
-    sample(D.vowels, 4).forEach(function (v) {
-      var opts = shuffle(sample(D.vowels.filter(function (x) { return x.id !== v.id; }), 3).concat([v]));
+    sample(list, 4).forEach(function (v) {
+      var opts = shuffle(sample(list.filter(function (x) { return x.id !== v.id; }), 3).concat([v]));
       out.push(choiceEx(T.findSyllable + ' «' + v.cy + '» (' + v.tr + ')', null,
-        opts.map(function (o) { return optSyr(o.syl, 'madnhaya'); }), opts.indexOf(v), v.tr));
+        opts.map(function (o) { return optSyr(o.syl, vs); }), opts.indexOf(v), v.tr));
     });
     return shuffle(out);
   }
 
   function numberExercises(unit) {
-    var pool = unit.letters.map(letterById);
+    var pool = unit.letters.map(letterById).map(function (x) { return R(x); });
     var out = [];
     pool.forEach(function (l, i) {
       var opts = letterOptions(l, pool, 4);
       out.push(choiceEx(T.numberOf, function () { return syr(l.ch, SCRIPT_IDS[i % 3], 'big'); },
-        opts.map(function (o) { return optText(String(o.num)); }), opts.indexOf(l), String(l.num)));
+        opts.map(function (o) { return optText(String(o.num)); }), idx(opts, l), String(l.num)));
     });
     sample(pool, 4).forEach(function (l) {
       var s = pick(SCRIPT_IDS);
       var opts = letterOptions(l, pool, 4);
       out.push(choiceEx(T.letterFor + ' ' + l.num + '?', null,
-        opts.map(function (o) { return optSyr(o.ch, s); }), opts.indexOf(l), l.name));
+        opts.map(function (o) { return optSyr(o.ch, s); }), idx(opts, l), l.name));
     });
     return shuffle(out);
   }
@@ -245,16 +275,16 @@
       var s = SCRIPT_IDS[i % 3];
       var opts = wordOptions(wd, pool, 4);
       out.push(choiceEx(T.meaning, function () { return syr(wd.syr, s, 'big'); },
-        opts.map(function (o) { return optText(o.ru); }), opts.indexOf(wd), wd.ru));
+        opts.map(function (o) { return optText(o.ru); }), idx(opts, wd), wd.ru));
     });
     sample(pool, 4).forEach(function (wd) {
       var opts = wordOptions(wd, pool, 4);
       out.push(choiceEx(T.chooseWord + ': «' + wd.ru + '»', null,
-        opts.map(function (o) { return optSyr(o.syr, state.script); }), opts.indexOf(wd), wd.tr));
+        opts.map(function (o) { return optSyr(o.syr, state.script); }), idx(opts, wd), wd.tr));
     });
     sample(pool, 3).forEach(function (wd) {
       out.push({ type: 'type', prompt: T.typeReading, show: function () { return syr(wd.syr, pick(SCRIPT_IDS), 'big'); },
-        hint: wd.ru, accept: [wd.tr, wd.cy, en(wd)].concat(wd.alt), answerText: wd.tr + ' · ' + en(wd) + ' · ' + wd.cy });
+        hint: wd.ru, accept: acceptAll((D.words[unit.words] || []).filter(function (x) { return x.id === wd.id; })[0] || wd).concat([en(wd)]), answerText: wd.tr + ' · ' + en(wd) + ' · ' + wd.cy });
     });
     sample(pool.filter(function (x) { return x.syr.indexOf(' ') === -1 && x.syr.length <= 6; }), 2).forEach(function (wd) {
       out.push(buildEx(wd));
@@ -330,9 +360,14 @@
   function theory(unit) {
     var box = el('div', 'cx-theory');
     if (unit.intro) box.appendChild(el('p', 'cx-intro', unit.intro));
+    if (unit.notes && unit.notes.length) {
+      var nl = el('ul', 'cx-notes');
+      unit.notes.forEach(function (n) { nl.appendChild(el('li', null, n)); });
+      box.appendChild(nl);
+    }
     if (unit.kind === 'letters' || unit.kind === 'numbers') {
       var grid = el('div', 'cx-letter-grid');
-      unit.letters.map(letterById).forEach(function (l) {
+      unit.letters.map(letterById).map(function (x) { return R(x); }).forEach(function (l) {
         var c = el('div', 'cx-letter-card');
         var row = el('div', 'cx-letter-row');
         SCRIPT_IDS.forEach(function (s) {
@@ -355,7 +390,7 @@
       T.forms.forEach(function (f) { hr.appendChild(el('th', null, f)); });
       thead.appendChild(hr); table.appendChild(thead);
       var tb = el('tbody');
-      unit.letters.map(letterById).forEach(function (l) {
+      unit.letters.map(letterById).map(function (x) { return R(x); }).forEach(function (l) {
         var tr = el('tr');
         var th = el('th', null, l.name + (l.join ? '' : ' *'));
         tr.appendChild(th);
@@ -372,9 +407,9 @@
       box.appendChild(el('p', 'fine-print', '* ' + T.noJoin + '. ' + 'Таблица показана в выбранной письменности (' + scriptName(state.script) + '); переключите её сверху, чтобы сравнить.'));
     } else if (unit.kind === 'vowels') {
       var vg = el('div', 'cx-letter-grid');
-      D.vowels.forEach(function (v) {
+      vowelList(unit).forEach(function (v) {
         var c = el('div', 'cx-letter-card');
-        c.appendChild(syr(v.syl, 'madnhaya', 'glyph glyph-xl'));
+        c.appendChild(syr(v.syl, vowelScript(unit), 'glyph glyph-xl'));
         c.appendChild(el('strong', 'cx-letter-name', v.name + ' · ' + v.tr + ' · ' + v.cy));
         c.appendChild(enSpan(v));
         c.appendChild(el('p', 'cx-letter-sound', v.note));
@@ -396,7 +431,7 @@
       if (ph) {
         box.appendChild(el('h3', 'cx-subhead', T.phrases));
         var pl = el('ul', 'cx-phrases');
-        ph.forEach(function (p) {
+        ph.map(function (x) { return R(x); }).forEach(function (p) {
           var li = el('li');
           li.appendChild(syr(p.syr, state.script, 'word'));
           li.appendChild(el('span', 'cx-word-tr', p.tr));
@@ -438,6 +473,7 @@
   // ---------- Script switcher ---------------------------------------------
   function scriptSwitcher(onChange) {
     var wrap = el('div', 'cx-scripts');
+    if (D.scripts.length < 2) { wrap.hidden = true; return wrap; }
     wrap.setAttribute('role', 'radiogroup');
     wrap.setAttribute('aria-label', T.script);
     D.scripts.forEach(function (s) {
@@ -457,6 +493,23 @@
     return wrap;
   }
 
+  function readingSwitcher(onChange) {
+    var wrap = el('div', 'cx-scripts cx-readings');
+    wrap.setAttribute('role', 'radiogroup');
+    wrap.setAttribute('aria-label', T.readingLabel);
+    READINGS.forEach(function (r) {
+      var b = el('button', 'cx-script' + (state.reading === r.id ? ' is-active' : ''));
+      b.type = 'button';
+      b.setAttribute('role', 'radio');
+      b.setAttribute('aria-checked', state.reading === r.id ? 'true' : 'false');
+      if (r.note) b.title = r.note;
+      b.appendChild(el('span', 'cx-script-name', r.name));
+      b.addEventListener('click', function () { state.reading = r.id; save(); if (onChange) onChange(); });
+      wrap.appendChild(b);
+    });
+    return wrap;
+  }
+
   // ---------- Overview ----------------------------------------------------
   function levelProgress(level) {
     if (!level.units) return { done: 0, total: 0 };
@@ -468,8 +521,12 @@
   function renderOverview() {
     root.textContent = '';
     var head = el('div', 'cx-toolbar');
-    head.appendChild(el('span', 'cx-toolbar-label', T.script + ':'));
+    if (D.scripts.length > 1) head.appendChild(el('span', 'cx-toolbar-label', T.script + ':'));
     head.appendChild(scriptSwitcher(renderOverview));
+    if (READINGS.length) {
+      head.appendChild(el('span', 'cx-toolbar-label', T.readingLabel + ':'));
+      head.appendChild(readingSwitcher(renderOverview));
+    }
     root.appendChild(head);
 
     var levelsNav = el('ol', 'cx-levels');
@@ -527,7 +584,7 @@
       var blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
       var a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'madrashta-progress.json';
+      a.download = M.exportName || 'madrashta-progress.json';
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
     }));
@@ -546,7 +603,7 @@
     var armed = false;
     var rb = btn(T.reset, 'btn-ghost btn-sm', function () {
       if (!armed) { armed = true; rb.textContent = T.resetQ; return; }
-      state = { script: state.script, done: {}, xp: 0 }; save(); renderOverview();
+      state = { script: state.script, reading: state.reading, done: {}, xp: 0 }; save(); renderOverview();
     });
     box.appendChild(rb);
     box.appendChild(el('p', 'fine-print', 'Прогресс хранится только в этом браузере. Чтобы продолжить на другом устройстве, сохраните его в файл и загрузите там.'));
@@ -582,7 +639,10 @@
     var top = el('div', 'cx-lesson-top');
     var back = el('a', 'cx-back', '← ' + T.back); back.href = '#/';
     top.appendChild(back);
-    top.appendChild(scriptSwitcher(function () { setKeys(null); renderLesson(level, unit); }));
+    var sw = el('div', 'cx-switchers');
+    sw.appendChild(scriptSwitcher(function () { setKeys(null); renderLesson(level, unit); }));
+    if (READINGS.length) sw.appendChild(readingSwitcher(function () { setKeys(null); renderLesson(level, unit); }));
+    top.appendChild(sw);
     shell.appendChild(top);
     shell.appendChild(el('h2', 'cx-lesson-title', level.code + ' · ' + unit.title));
     var prog = el('progress', 'cx-progress'); prog.max = total; prog.value = 0;

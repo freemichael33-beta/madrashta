@@ -171,6 +171,10 @@
   .cx-cert { border-color: #000; }
 }
 .cx-level-can { margin: 6px 0 0; font-size: .9rem; color: var(--blue-800); font-style: italic; }
+.cx-switchers { display: flex; flex-wrap: wrap; gap: 8px; }
+.cx-readings .cx-script { min-height: 40px; }
+.cx-notes { margin: 0 0 16px; padding-inline-start: 20px; max-width: 70ch; }
+.cx-notes li { margin-bottom: 6px; }
 .cx-show .sent { font-size: clamp(1.8rem, 5vw, 2.6rem); line-height: 1.6; padding: 8px 16px; text-align: center; color: var(--blue-950); }
 .cx-tile-word { padding: 4px 14px; font-size: 1.5rem; }
 .cx-grammar { margin: 0; }
