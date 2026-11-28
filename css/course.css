@@ -211,3 +211,5 @@
 .cx-option:has(.cx-translit) { flex-wrap: wrap; }
 .cx-show .cx-translit-show { font-size: 1.05rem; color: var(--blue-800); margin-top: -8px; padding-bottom: 10px; text-align: center; }
 .cx-built .cx-translit { text-align: center; margin-top: -6px; padding-bottom: 6px; }
+.cx-line-script { align-items: stretch; min-width: 0; }
+.cx-line-script .word { display: block; text-align: right; overflow-wrap: anywhere; min-width: 0; }

@@ -333,7 +333,7 @@
   }
 
   function sentenceExercises(unit) {
-    var pool = unit.sentences || [];
+    var pool = (unit.sentences || []).map(function (x) { return R(x); });
     var out = [];
     pool.forEach(function (st, i) {
       var opts = shuffle([st].concat(sample(pool.filter(function (x) { return x !== st; }), 3)));
@@ -364,7 +364,7 @@
       var idx = 0; opts.forEach(function (o, i) { if (o.ok) idx = i; });
       out.push(choiceEx(q.q, null, opts.map(function (o) { return optText(o.text); }), idx, q.options[0]));
     });
-    var lines = unit.text || [];
+    var lines = (unit.text || []).map(function (x) { return R(x); });
     sample(lines, Math.min(4, lines.length)).forEach(function (st, i) {
       var opts = shuffle([st].concat(sample(lines.filter(function (x) { return x !== st; }), Math.min(3, lines.length - 1))));
       out.push(choiceEx(T.sentMeaning, function () { return syr(st.syr, SCRIPT_IDS[i % 3], 'sent'); },
@@ -488,7 +488,7 @@
       var gw = el('div', 'table-wrap'); gw.appendChild(gt); box.appendChild(gw);
     }
     if (unit.kind === 'sentences' || unit.kind === 'reading') {
-      var lines = unit.kind === 'sentences' ? unit.sentences : unit.text;
+      var lines = (unit.kind === 'sentences' ? unit.sentences : unit.text).map(function (x) { return R(x); });
       box.appendChild(el('h3', 'cx-subhead', unit.kind === 'sentences' ? T.examples : T.text));
       var ul2 = el('ol', 'cx-phrases' + (unit.kind === 'reading' ? ' cx-text' : ''));
       lines.forEach(function (st) {
