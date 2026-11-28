@@ -108,6 +108,44 @@
     return a.filter(Boolean);
   }
   function readingName(id) { for (var i = 0; i < READINGS.length; i++) if (READINGS[i].id === id) return READINGS[i].name; return id; }
+  // ---------- Latin transliteration of any Syriac text ---------------------
+  // Known items (words, phrases, letters, vowels, sentences) use their reading
+  // in the selected tradition; anything else falls back to a letter-by-letter
+  // consonant transliteration.
+  var CONS = { 'ܐ': 'ʾ', 'ܒ': 'b', 'ܓ': 'g', 'ܕ': 'd', 'ܗ': 'h', 'ܘ': 'w', 'ܙ': 'z', 'ܚ': 'ḥ', 'ܛ': 'ṭ', 'ܝ': 'y', 'ܟ': 'k',
+    'ܠ': 'l', 'ܡ': 'm', 'ܢ': 'n', 'ܣ': 's', 'ܥ': 'ʿ', 'ܦ': 'p', 'ܨ': 'ṣ', 'ܩ': 'q', 'ܪ': 'r', 'ܫ': 'sh', 'ܬ': 't' };
+  var trCache = {};
+  function cleanSyr(t) { return String(t || '').replace(/[\u200c\u200d]/g, '').trim(); }
+  function trIndex() {
+    var key = state.reading || '-';
+    if (trCache[key]) return trCache[key];
+    var m = {};
+    function add(syrText, tr) { var k = cleanSyr(syrText); if (k && tr && !m[k]) m[k] = tr; }
+    Object.keys(D.words || {}).forEach(function (k) { D.words[k].forEach(function (x) { add(x.syr, en(x)); }); });
+    Object.keys(D.phrases || {}).forEach(function (k) { D.phrases[k].forEach(function (x) { add(x.syr, en(x)); }); });
+    (D.levels || []).forEach(function (lv) { (lv.units || []).forEach(function (u) { (u.sentences || []).concat(u.text || []).forEach(function (x) { add(x.syr, en(x)); }); }); });
+    var vs = [D.vowels || []]; if (D.vowelSets) Object.keys(D.vowelSets).forEach(function (k) { vs.push(D.vowelSets[k]); });
+    vs.forEach(function (list) { list.forEach(function (x) { add(x.syl, en(x)); }); });
+    (D.letters || []).forEach(function (x) { add(x.ch, toEn(CONS[x.ch] || x.tr)); });
+    trCache[key] = m;
+    return m;
+  }
+  function trOf(text) {
+    var t = cleanSyr(text);
+    if (!t) return '';
+    var m = trIndex();
+    if (m[t]) return m[t];
+    return t.split(/\s+/).map(function (wd) {
+      if (m[wd]) return m[wd];
+      return toEn(Array.from(wd).map(function (c) { return CONS[c] !== undefined ? CONS[c] : (/[\u0700-\u074f]/.test(c) ? '' : c); }).join(''));
+    }).join(' ');
+  }
+  function trNode(text, cls) {
+    var n = el('span', 'cx-word-en cx-translit' + (cls ? ' ' + cls : ''), 'EN: ' + trOf(text));
+    n.setAttribute('lang', 'en');
+    return n;
+  }
+
   function letterById(id) { for (var i = 0; i < D.letters.length; i++) if (D.letters[i].id === id) return D.letters[i]; return null; }
   function scriptName(id) { for (var i = 0; i < D.scripts.length; i++) if (D.scripts[i].id === id) return D.scripts[i].name; return id; }
   function otherScript(s) { return pick(SCRIPT_IDS.filter(function (x) { return x !== s; })); }
@@ -392,7 +430,7 @@
       var tb = el('tbody');
       unit.letters.map(letterById).map(function (x) { return R(x); }).forEach(function (l) {
         var tr = el('tr');
-        var th = el('th', null, l.name + (l.join ? '' : ' *'));
+        var th = el('th', null, l.name + ' [' + (CONS[l.ch] || l.tr) + ']' + (l.join ? '' : ' *'));
         tr.appendChild(th);
         ['isolated', 'initial', 'medial', 'final'].forEach(function (p) {
           var td = el('td');
@@ -482,6 +520,7 @@
       b.setAttribute('aria-checked', state.script === s.id ? 'true' : 'false');
       b.title = s.note;
       b.appendChild(syr('ܐܒܓ', s.id, 'cx-script-sample'));
+      b.setAttribute('aria-label', s.name + ' (ʾ b g)');
       b.appendChild(el('span', 'cx-script-name', s.name));
       b.addEventListener('click', function () {
         state.script = s.id; save();
@@ -683,7 +722,18 @@
       }
     }
 
+    var shown = null;
+    // After an answer, show the Latin transliteration of every Syriac item on screen.
+    function revealTr() {
+      if (shown && !shown.box.querySelector('.cx-translit')) shown.box.appendChild(trNode(shown.text, 'cx-translit-show'));
+      Array.prototype.forEach.call(stage.querySelectorAll('.cx-option .opt-syr, .cx-built .word'), function (n) {
+        var host = n.parentNode;
+        if (host.querySelector('.cx-translit')) return;
+        host.appendChild(trNode(n.textContent));
+      });
+    }
     function feedback(ok, ex, after) {
+      revealTr();
       var fb = el('div', 'cx-feedback ' + (ok ? 'is-ok' : 'is-bad'));
       fb.setAttribute('role', 'status');
       fb.appendChild(el('strong', null, ok ? T.correct : T.wrong));
@@ -705,7 +755,8 @@
     function renderExercise(ex) {
       stage.textContent = '';
       stage.appendChild(el('p', 'cx-prompt', ex.prompt));
-      if (ex.show) { var sh = el('div', 'cx-show'); sh.appendChild(ex.show()); stage.appendChild(sh); }
+      shown = null;
+      if (ex.show) { var sh = el('div', 'cx-show'); var node = ex.show(); sh.appendChild(node); stage.appendChild(sh); if (node.getAttribute && node.getAttribute('lang') === 'syr') shown = { box: sh, text: node.textContent }; }
       if (ex.hint) stage.appendChild(el('p', 'cx-hint', '«' + ex.hint + '»'));
       if (ex.hintTr) stage.appendChild(el('p', 'cx-hint', ex.hintTr));
       if (shell.getBoundingClientRect().top < 0) shell.scrollIntoView({ block: 'start' });
@@ -831,6 +882,7 @@
           }
           if (sel.dataset.key === b.dataset.key) {
             sel.classList.remove('is-sel'); sel.classList.add('is-right'); b.classList.add('is-right');
+            [sel, b].forEach(function (x) { var n = x.querySelector('.opt-syr'); if (n && !x.querySelector('.cx-translit')) x.appendChild(trNode(n.textContent)); });
             sel.disabled = true; b.disabled = true; sel = null; solved++;
             if (solved === ex.pairs.length) { var ok = mistakes === 0; record(ex, ok); feedback(ok, ex, nextExercise); }
           } else {
