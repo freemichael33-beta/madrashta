@@ -169,3 +169,7 @@
   .cx-cert { border-color: #000; }
 }
 .cx-level-can { margin: 6px 0 0; font-size: .9rem; color: var(--blue-800); font-style: italic; }
+.cx-switchers { display: flex; flex-wrap: wrap; gap: 8px; }
+.cx-readings .cx-script { min-height: 40px; }
+.cx-notes { margin: 0 0 16px; padding-inline-start: 20px; max-width: 70ch; }
+.cx-notes li { margin-bottom: 6px; }
