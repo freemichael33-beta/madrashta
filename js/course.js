@@ -22,6 +22,7 @@
   var READINGS = M.readings || [];
   var READING_IDS = READINGS.map(function (r) { return r.id; });
 
+  var CERT_NOTE = 'Мы работаем над созданием независимого сертификационного центра. Наша цель — чтобы сертификация Madrashta стала признанным стандартом владения сурэт и туройо.';
   var T = {
     start: 'Начать', cont: 'Продолжить', check: 'Проверить', next: 'Дальше', retry: 'Пройти ещё раз',
     back: 'Все уроки', correct: 'Верно!', wrong: 'Не совсем.', answer: 'Правильный ответ:',
@@ -35,7 +36,6 @@
     findSyllable: 'Найдите слог', numberOf: 'Какое число обозначает эта буква?', letterFor: 'Какая буква обозначает число',
     placeholder: 'Ваш ответ', erase: 'Стереть', clear: 'Очистить', theory: 'Теория', exercises: 'Упражнений',
     done: 'Пройдено', notStarted: 'Не начат', best: 'лучший результат', soon: 'Скоро', open: 'Открыт',
-    certTitle: 'Сертификат уровня', certName: 'Ваше имя для сертификата', certMake: 'Получить сертификат',
     print: 'Распечатать', exportP: 'Сохранить прогресс в файл', importP: 'Загрузить прогресс из файла',
     reset: 'Сбросить прогресс', resetQ: 'Нажмите ещё раз, чтобы удалить весь прогресс', imported: 'Прогресс загружен.',
     importErr: 'Не удалось прочитать файл.', of: 'из', script: 'Письменность', planned: 'Что будет на уровне',
@@ -565,11 +565,6 @@
           ul.appendChild(item);
         });
         li.appendChild(ul);
-        if (state.cert && state.cert[lv.id]) {
-          var cl = el('a', 'btn btn-red btn-sm', T.certTitle + ' ' + lv.code);
-          cl.href = '#/' + lv.id + '/cert';
-          li.appendChild(cl);
-        }
       } else if (lv.plan) {
         li.appendChild(el('p', 'cx-plan-title', T.planned + ' ' + lv.code + ':'));
         var pl = el('ul', 'cx-plan');
@@ -579,6 +574,7 @@
       levelsNav.appendChild(li);
     });
     root.appendChild(levelsNav);
+    root.appendChild(el('p', 'fine-print cx-cert-note', certNote()));
     root.appendChild(progressTools());
   }
 
@@ -865,69 +861,25 @@
       card.appendChild(el('p', 'muted', T.score + ': ' + firstTry + ' ' + T.of + ' ' + total + (passed ? '' : '. ' + T.needed)));
       var acts = el('div', 'cx-actions');
       acts.appendChild(btn(T.retry, 'btn-ghost', function () { renderLesson(level, unit); }));
-      if (isTest && passed) {
-        var cb = el('a', 'btn btn-red', T.certMake); cb.href = '#/' + level.id + '/cert';
-        acts.appendChild(cb);
-        state.cert = state.cert || {};
-        state.cert[level.id] = state.cert[level.id] || { date: new Date().toISOString().slice(0, 10), score: pct };
-        save();
-      } else {
-        var i = level.units.indexOf(unit);
-        var nx = level.units[i + 1];
-        if (nx) { var a = el('a', 'btn ' + (passed ? 'btn-red' : 'btn-blue'), T.nextLesson + ': ' + nx.title); a.href = '#/' + level.id + '/' + nx.id; acts.appendChild(a); }
-      }
+      var i = level.units.indexOf(unit);
+      var nx = level.units[i + 1];
+      if (nx) { var a = el('a', 'btn ' + (passed ? 'btn-red' : 'btn-blue'), T.nextLesson + ': ' + nx.title); a.href = '#/' + level.id + '/' + nx.id; acts.appendChild(a); }
       var b2 = el('a', 'btn btn-ghost', T.back); b2.href = '#/'; acts.appendChild(b2);
       card.appendChild(acts);
+      if (isTest) card.appendChild(el('p', 'fine-print cx-cert-note', certNote()));
       stage.appendChild(card);
     }
   }
 
-  // ---------- Certificate --------------------------------------------------
-  function renderCert(level) {
-    root.textContent = '';
-    var c = state.cert && state.cert[level.id];
-    var wrap = el('section', 'cx-lesson');
-    var back = el('a', 'cx-back', '← ' + T.back); back.href = '#/';
-    wrap.appendChild(back);
-    if (!c) {
-      wrap.appendChild(el('p', 'cx-intro', 'Сертификат выдаётся после итогового теста уровня.'));
-      root.appendChild(wrap); return;
-    }
-    var form = el('form', 'cx-type no-print');
-    var input = el('input', 'cx-input'); input.type = 'text'; input.placeholder = T.certName; input.setAttribute('aria-label', T.certName);
-    input.value = state.name || '';
-    form.appendChild(input);
-    var sb = btn(T.certMake, 'btn-blue'); sb.type = 'submit'; form.appendChild(sb);
-    var cert = el('div', 'cx-cert');
-    function draw() {
-      cert.textContent = '';
-      cert.appendChild(syr('ܡܕܪܫܬܐ', 'estrangela', 'cx-cert-script'));
-      cert.appendChild(el('p', 'cx-cert-org', M.certOrg || 'Madrashta — Школа ассирийского языка'));
-      cert.appendChild(el('h2', null, 'Сертификат'));
-      cert.appendChild(el('p', null, 'подтверждает, что'));
-      cert.appendChild(el('p', 'cx-cert-name', state.name || '—'));
-      cert.appendChild(el('p', null, 'успешно завершил(а) ' + (M.certCourse || 'онлайн-курс современного ассирийского языка') + ' уровня ' + level.code + ' (' + level.title.toLowerCase() + ') по шкале CEFR, включая чтение ' + (M.certScripts || 'в письменностях эстрангело, серто и маднхая') + (M.certExtra ? ', ' + M.certExtra : '') + '.'));
-      cert.appendChild(el('p', 'muted', 'Итоговый тест: ' + c.score + '% · ' + c.date));
-      cert.appendChild(el('p', 'cx-cert-author', 'Автор курса: ' + (M.author || 'Michael Baddu')));
-    }
-    form.addEventListener('submit', function (e) { e.preventDefault(); state.name = input.value.trim().slice(0, 80); save(); draw(); });
-    draw();
-    wrap.appendChild(form);
-    wrap.appendChild(cert);
-    var acts = el('div', 'cx-actions no-print');
-    acts.appendChild(btn(T.print, 'btn-red', function () { window.print(); }));
-    wrap.appendChild(acts);
-    wrap.appendChild(el('p', 'fine-print no-print', 'Это сертификат о прохождении самостоятельного онлайн-курса, а не официальный экзамен.'));
-    root.appendChild(wrap);
-  }
+  // Certification is paused: a small-print note explains the plan instead.
+  function certNote() { return (D.meta && D.meta.certNote) || CERT_NOTE; }
 
   // ---------- Router -------------------------------------------------------
   function route() {
     setKeys(null);
     var parts = (window.location.hash || '').replace(/^#\/?/, '').split('/').filter(Boolean);
     var level = parts[0] && findLevel(parts[0]);
-    if (level && parts[1] === 'cert') renderCert(level);
-    else if (level && level.units && parts[1] && findUnit(level, parts[1])) renderLesson(level, findUnit(level, parts[1]));
+    if (level && level.units && parts[1] && findUnit(level, parts[1])) renderLesson(level, findUnit(level, parts[1]));
     else renderOverview();
     if (parts.length) root.scrollIntoView({ block: 'start' });
   }
