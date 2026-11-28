@@ -639,3 +639,5 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--b
 @media (max-width: 860px) { .course-promo-card { grid-template-columns: 1fr; padding: 28px 22px; gap: 24px; } }
 .course-promo-actions { margin: 16px 0 0; }
 .course-promo-copy .course-promo-actions .btn { margin-top: 0; }
+
+.course-promo .cx-word-en { font-size: .85em; color: var(--blue-800); }
