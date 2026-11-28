@@ -482,6 +482,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--b
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
 .footer-brand p { margin-top: 16px; max-width: 36ch; color: var(--blue-300); }
 .brand-invert, .brand-invert:hover { color: var(--white); }
+.brand-invert img { background: var(--white); border-radius: 10px; padding: 3px; }
 .footer-credit { display: flex; align-items: center; gap: 12px; margin-top: 24px; font-size: .9rem; color: var(--blue-300); }
 .footer-credit img { flex: none; filter: drop-shadow(0 0 1px rgba(255, 255, 255, .6)); }
 .footer-credit strong { display: block; color: var(--white); font-size: 1rem; }
