@@ -29,7 +29,7 @@
     needed: 'Чтобы засчитать урок, нужно не меньше 70%.', nextLesson: 'Следующий урок',
     whichLetter: 'Какая это буква?', findLetter: 'Найдите букву', sameIn: 'Та же буква в письме',
     soundOf: 'Как читается эта буква?', meaning: 'Что значит это слово?', chooseWord: 'Выберите слово',
-    typeReading: 'Напишите, как это читается (латиницей или кириллицей)', build: 'Соберите слово из букв',
+    typeReading: 'Напишите, как это читается (латиницей, по-английски или кириллицей)', build: 'Соберите слово из букв',
     match: 'Соедините пары', joins: 'Соединяется ли эта буква со следующей буквой слова?',
     yes: 'Да', no: 'Нет', formOf: 'Какая буква спрятана в этой форме?', syllable: 'Как читается слог?',
     findSyllable: 'Найдите слог', numberOf: 'Какое число обозначает эта буква?', letterFor: 'Какая буква обозначает число',
@@ -103,8 +103,8 @@
   }
   // Every accepted reading of an item, across all traditions.
   function acceptAll(o) {
-    var a = [o.tr, o.cy].concat(o.alt || []);
-    if (o.r) Object.keys(o.r).forEach(function (k) { var r = o.r[k]; a = a.concat([r.tr, r.cy], r.alt || []); });
+    var a = [o.tr, o.cy, o.en != null ? o.en : toEn(o.tr)].concat(o.alt || []);
+    if (o.r) Object.keys(o.r).forEach(function (k) { var r = o.r[k]; a = a.concat([r.tr, r.cy, r.en != null ? r.en : (r.tr ? toEn(r.tr) : '')], r.alt || []); });
     return a.filter(Boolean);
   }
   function readingName(id) { for (var i = 0; i < READINGS.length; i++) if (READINGS[i].id === id) return READINGS[i].name; return id; }
@@ -114,6 +114,41 @@
   function normalize(s) {
     return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
       .replace(/ё/g, 'е').replace(/[ʾʿ'’`ʼ\-.,!?:;]/g, '').replace(/\s+/g, ' ').trim();
+  }
+  // Plain English-friendly transliteration (ASCII only), derived from the
+  // scholarly reading `tr`. A course can override single characters through
+  // COURSE_DATA.enRules ({'ḥ': 'h'}), and any item can give its own `en`.
+  var EN_RULES = {
+    'ā': 'a', 'ē': 'e', 'ī': 'i', 'ō': 'o', 'ū': 'u', 'ă': 'a', 'ə': 'e',
+    'ḥ': 'kh', 'ṭ': 't', 'ṣ': 's', 'ḍ': 'd', 'ẓ': 'z', 'š': 'sh', 'č': 'ch', 'ž': 'zh', 'ġ': 'gh',
+    'ḵ': 'kh', 'ḡ': 'gh', 'ḇ': 'v', 'ḏ': 'dh', 'ṯ': 'th', 'p̄': 'f', 'x': 'kh',
+    'ʾ': '', 'ʿ': '', 'ʼ': ''
+  };
+  if (D.enRules) Object.keys(D.enRules).forEach(function (k) { EN_RULES[k] = D.enRules[k]; });
+  var EN_KEYS = Object.keys(EN_RULES).sort(function (a, b) { return b.length - a.length; });
+  function toEn(tr) {
+    var src = String(tr || '').replace(/\s*\([^)]*\)/g, '').normalize('NFC');
+    var out = '';
+    for (var i = 0; i < src.length;) {
+      var hit = false;
+      for (var j = 0; j < EN_KEYS.length; j++) {
+        var k = EN_KEYS[j];
+        if (src.substr(i, k.length).toLowerCase() === k) {
+          var v = EN_RULES[k];
+          if (v && src[i] !== src[i].toLowerCase()) v = v[0].toUpperCase() + v.slice(1);
+          out += v; i += k.length; hit = true; break;
+        }
+      }
+      if (!hit) { out += src[i]; i++; }
+    }
+    return out.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ').trim();
+  }
+  function en(item) { var r = R(item); return r.en != null ? r.en : toEn(r.tr); }
+  function enSpan(item) {
+    var t = en(item);
+    var sp = el('span', 'cx-word-en', t ? 'EN: ' + t : 'EN: —');
+    sp.setAttribute('lang', 'en');
+    return sp;
   }
   function lessonKey(level, unit) { return level.id + '-' + unit.id; }
   function findLevel(id) { for (var i = 0; i < D.levels.length; i++) if (D.levels[i].id === id) return D.levels[i]; return null; }
@@ -249,7 +284,7 @@
     });
     sample(pool, 3).forEach(function (wd) {
       out.push({ type: 'type', prompt: T.typeReading, show: function () { return syr(wd.syr, pick(SCRIPT_IDS), 'big'); },
-        hint: wd.ru, accept: acceptAll((D.words[unit.words] || []).filter(function (x) { return x.id === wd.id; })[0] || wd), answerText: wd.tr + ' · ' + wd.cy });
+        hint: wd.ru, accept: acceptAll((D.words[unit.words] || []).filter(function (x) { return x.id === wd.id; })[0] || wd), answerText: wd.tr + ' · ' + en(wd) + ' · ' + wd.cy });
     });
     sample(pool.filter(function (x) { return x.syr.indexOf(' ') === -1 && x.syr.length <= 6; }), 2).forEach(function (wd) {
       out.push(buildEx(wd));
@@ -344,6 +379,7 @@
         c.appendChild(row);
         c.appendChild(el('strong', 'cx-letter-name', l.name + ' · ' + l.cy + (unit.kind === 'numbers' ? ' = ' + l.num : '')));
         c.appendChild(el('p', 'cx-letter-sound', '[' + l.tr + '] ' + l.sound));
+        c.appendChild(enSpan(l));
         grid.appendChild(c);
       });
       box.appendChild(grid);
@@ -375,6 +411,7 @@
         var c = el('div', 'cx-letter-card');
         c.appendChild(syr(v.syl, vowelScript(unit), 'glyph glyph-xl'));
         c.appendChild(el('strong', 'cx-letter-name', v.name + ' · ' + v.tr + ' · ' + v.cy));
+        c.appendChild(enSpan(v));
         c.appendChild(el('p', 'cx-letter-sound', v.note));
         vg.appendChild(c);
       });
@@ -385,6 +422,7 @@
         var c = el('div', 'cx-word-card');
         c.appendChild(syr(wd.syr, state.script, 'word'));
         c.appendChild(el('span', 'cx-word-tr', wd.tr + ' · ' + wd.cy));
+        c.appendChild(enSpan(wd));
         c.appendChild(el('span', 'cx-word-ru', wd.ru));
         list.appendChild(c);
       });
@@ -397,6 +435,7 @@
           var li = el('li');
           li.appendChild(syr(p.syr, state.script, 'word'));
           li.appendChild(el('span', 'cx-word-tr', p.tr));
+          li.appendChild(enSpan(p));
           li.appendChild(el('span', 'cx-word-ru', p.ru));
           pl.appendChild(li);
         });
@@ -422,6 +461,7 @@
           li.appendChild(row);
         } else li.appendChild(syr(st.syr, state.script, 'word'));
         li.appendChild(el('span', 'cx-word-tr', st.tr + (st.west ? ' · ' + T.west + ': ' + st.west : '')));
+        li.appendChild(enSpan(st));
         li.appendChild(el('span', 'cx-word-ru', st.ru));
         ul2.appendChild(li);
       });
