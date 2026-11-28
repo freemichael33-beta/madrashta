@@ -11,7 +11,7 @@
 window.COURSE_DATA = (function () {
   // 22 letters of the Syriac alphabet. join: false = does not connect to the left.
   var letters = [
-    { id: 'alap', ch: 'ܐ', tr: 'ʾ', name: 'Ālap', cy: 'алап', join: false, num: 1, sound: 'гласная опора (немая буква перед гласной), в конце слова часто «а»' },
+    { id: 'alap', ch: 'ܐ', tr: 'ʾ (немая)', name: 'Ālap', cy: 'алап', join: false, num: 1, sound: 'гласная опора (немая буква перед гласной), в конце слова часто «а»' },
     { id: 'bet', ch: 'ܒ', tr: 'b', name: 'Bēt', cy: 'бет', join: true, num: 2, sound: '«б», после гласной может звучать как «в»' },
     { id: 'gamal', ch: 'ܓ', tr: 'g', name: 'Gāmal', cy: 'гамал', join: true, num: 3, sound: '«г»' },
     { id: 'dalat', ch: 'ܕ', tr: 'd', name: 'Dālat', cy: 'далат', join: false, num: 4, sound: '«д»; точка под буквой' },
@@ -26,7 +26,7 @@ window.COURSE_DATA = (function () {
     { id: 'mim', ch: 'ܡ', tr: 'm', name: 'Mīm', cy: 'мим', join: true, num: 40, sound: '«м»' },
     { id: 'nun', ch: 'ܢ', tr: 'n', name: 'Nūn', cy: 'нун', join: true, num: 50, sound: '«н»' },
     { id: 'semkat', ch: 'ܣ', tr: 's', name: 'Semkat', cy: 'семкат', join: true, num: 60, sound: '«с»' },
-    { id: 'e', ch: 'ܥ', tr: 'ʿ', name: 'ʿĒ', cy: 'э', join: true, num: 70, sound: 'гортанный звук; в сурэт обычно звучит как гласная' },
+    { id: 'e', ch: 'ܥ', tr: 'ʿ (гортанная)', name: 'ʿĒ', cy: 'э', join: true, num: 70, sound: 'гортанный звук; в сурэт обычно звучит как гласная' },
     { id: 'pe', ch: 'ܦ', tr: 'p', name: 'Pē', cy: 'пе', join: true, num: 80, sound: '«п», после гласной может звучать как «ф»' },
     { id: 'sade', ch: 'ܨ', tr: 'ṣ', name: 'Ṣādē', cy: 'саде', join: false, num: 90, sound: 'твёрдое (эмфатическое) «с»' },
     { id: 'qop', ch: 'ܩ', tr: 'q', name: 'Qōp', cy: 'коп', join: true, num: 100, sound: 'глубокое «к» (из горла)' },
